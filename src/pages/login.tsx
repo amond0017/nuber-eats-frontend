@@ -1,9 +1,25 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { FormError } from "../components/form-error";
+import { gql, useMutation } from "@apollo/client";
+import {
+  loginMutation,
+  loginMutationVariables,
+} from "../__generated__/loginMutation";
+
+const LOGIN_MUTATION = gql`
+  mutation loginMutation($email: String!, $password: String!) {
+    login(input: { email: $email, password: $password }) {
+      ok
+      token
+      error
+    }
+  }
+`;
 
 interface ILoginForm {
-  email?: string;
-  password?: string;
+  email: string;
+  password: string;
 }
 
 export const Login = () => {
@@ -13,8 +29,16 @@ export const Login = () => {
     formState: { errors },
     handleSubmit,
   } = useForm<ILoginForm>();
+  const [loginMutation, { loading, error, data }] = useMutation<
+    loginMutation,
+    loginMutationVariables
+  >(LOGIN_MUTATION);
 
-  const onSubmit = () => {};
+  const onSubmit = () => {
+    const { email, password } = getValues();
+
+    loginMutation({ variables: { email, password } });
+  };
 
   return (
     <div className="h-screen flex items-center justify-center bg-gray-800">
@@ -31,30 +55,24 @@ export const Login = () => {
             className="input"
           />
           {errors.email?.message && (
-            <span className="font-medium text-red-500">
-              {errors.email?.message}
-            </span>
+            <FormError errorMessage={errors.email.message} />
           )}
 
           <input
             {...register("password", {
               required: "Password is required",
-              minLength: 10,
+              // minLength: 10,
             })}
             type="password"
             placeholder="Password"
             className="input"
           />
           {errors.password?.message && (
-            <span className="font-medium text-red-500">
-              {errors.password?.message}
-            </span>
+            <FormError errorMessage={errors.password.message} />
           )}
-          {errors.password?.type === "minLength" && (
-            <span className="font-medium text-red-500">
-              Password must be more than 10 chars.
-            </span>
-          )}
+          {/* {errors.password?.type === "minLength" && (
+            <FormError errorMessage="Password must be more than 10 chars." />
+          )} */}
 
           <button className="mt-3 btn">Log In</button>
         </form>
