@@ -5,7 +5,7 @@ import nuberLogo from "../images/logo.svg";
 import { Button } from "../components/button";
 import { Link, useHistory } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { UserRole } from "@generated/globalTypes";
+import { UserRole } from "../__generated__/globalTypes";
 import {
   createAccountMutation,
   createAccountMutationVariables,
