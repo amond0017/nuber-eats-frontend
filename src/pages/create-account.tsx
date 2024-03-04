@@ -5,11 +5,11 @@ import nuberLogo from "../images/logo.svg";
 import { Button } from "../components/button";
 import { Link, useHistory } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { UserRole } from "../__generated__/globalTypes";
+import { UserRole } from "@generated/globalTypes";
 import {
   createAccountMutation,
   createAccountMutationVariables,
-} from "../__generated__/createAccountMutation";
+} from "@generated/createAccountMutation";
 
 const CREATE_ACCOUNT_MUTATION = gql`
   mutation createAccountMutation($createAccountInput: CreateAccountInput!) {

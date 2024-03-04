@@ -5,7 +5,7 @@ import nuberLogo from "../images/logo.svg";
 import {
   loginMutation,
   loginMutationVariables,
-} from "../__generated__/loginMutation";
+} from "@generated/loginMutation";
 import { Button } from "../components/button";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
