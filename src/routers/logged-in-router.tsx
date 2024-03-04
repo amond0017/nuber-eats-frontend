@@ -1,13 +1,8 @@
-import {
-  Redirect,
-  Route,
-  BrowserRouter as Router,
-  Switch,
-} from "react-router-dom";
+import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 import { Header } from "../components/header";
 import { useMe } from "../hooks/useMe";
-import { Restaurants } from "../pages/client/restaurants";
 import { NotFound } from "../pages/404";
+import { Restaurants } from "../pages/client/restaurants";
 import { ConfirmEmail } from "../pages/user/confirm-email";
 
 const ClientRoutes = [

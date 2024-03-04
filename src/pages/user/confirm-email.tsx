@@ -1,7 +1,8 @@
-import { gql, useMutation } from "@apollo/client";
+import { gql, useApolloClient, useMutation } from "@apollo/client";
 import { verifyEmail, verifyEmailVariables } from "@generated/verifyEmail";
 import { useEffect } from "react";
 import { useGetQueryParam } from "src/hooks/useGetQueryParam";
+import { useMe } from "src/hooks/useMe";
 
 const VERIFY_EMAIL_MUTATION = gql`
   mutation verifyEmail($input: VerifyEmailInput!) {
@@ -13,10 +14,34 @@ const VERIFY_EMAIL_MUTATION = gql`
 `;
 
 export const ConfirmEmail = () => {
-  const [verifyEmail, { data, loading: verifyingEmail, error }] = useMutation<
-    verifyEmail,
-    verifyEmailVariables
-  >(VERIFY_EMAIL_MUTATION);
+  const { data: userData } = useMe();
+  const client = useApolloClient(); // apollo client 불러오기
+  const onCompleted = (data: verifyEmail) => {
+    const {
+      verifyEmail: { ok },
+    } = data;
+    if (ok && userData?.me.id) {
+      client.writeFragment({
+        // writeFragment
+        id: `User:${userData.me.id}`,
+        fragment: gql`
+          fragment VerifiedUser on User {
+            ## fragment <fragmentName(아무거나)> on <Type(graphQL 의 타입과 같아야 됨!)>
+            verified ## 수정할 필드(fragment) 선언
+          }
+        `,
+        data: {
+          verified: true, // 수정할 데이터
+        },
+      });
+    }
+  };
+  const [verifyEmail] = useMutation<verifyEmail, verifyEmailVariables>(
+    VERIFY_EMAIL_MUTATION,
+    {
+      onCompleted,
+    }
+  );
 
   const query = useGetQueryParam();
   const code = query.get("code") || "";
