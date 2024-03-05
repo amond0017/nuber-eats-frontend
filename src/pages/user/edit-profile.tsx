@@ -20,13 +20,35 @@ interface IFormProps {
 }
 
 export const EditProfile = () => {
-  const { data: userData } = useMe();
-  const onCompleted = (data: editProfile) => {
+  const { data: userData, refetch: refreshUser } = useMe();
+  // const client = useApolloClient();
+  const onCompleted = async (data: editProfile) => {
     const {
       editProfile: { ok },
     } = data;
-    if (ok) {
-      // update the cache
+    if (ok && userData) {
+      await refreshUser();
+
+      // writeFragment 를 써서 직접 cache 업데이트.
+      /* const {
+        me: { email: prevEamil, id },
+      } = userData;
+      const { email: newEmail } = getValues();
+      if (prevEamil !== newEmail) {
+        client.writeFragment({
+          id: `User:${id}`,
+          fragment: gql`
+            fragment EditedUser on User {
+              verified 
+              email
+            }
+          `,
+          data: {
+            email: newEmail,
+            verified: false,
+          },
+        });
+      } */
     }
   };
   const [editProfile, { loading }] = useMutation<
