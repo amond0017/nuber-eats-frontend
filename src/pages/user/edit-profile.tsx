@@ -1,6 +1,7 @@
 import { gql, useMutation } from "@apollo/client";
 import { editProfile, editProfileVariables } from "@generated/editProfile";
 import React from "react";
+import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
 import { Button } from "src/components/button";
 import { useMe } from "src/hooks/useMe";
@@ -76,6 +77,9 @@ export const EditProfile = () => {
 
   return (
     <div className="mt-52 flex flex-col items-center justify-center">
+      <Helmet>
+        <title>Edit Profile | Nuber Eats</title>
+      </Helmet>
       <h4 className="font-semibold text-2xl mb-3">Edit Profile</h4>
       <form
         onSubmit={handleSubmit(onSubmit)}
