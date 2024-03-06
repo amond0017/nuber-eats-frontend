@@ -4,9 +4,11 @@ import {
   restarantsPageQueryVariables,
 } from "@generated/restarantsPageQuery";
 import React, { useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { Restaurant } from "src/components/restaurant";
+import { RESTAURANT_FRAGMENT } from "src/fragments";
 
 const RESTAURANTS_QUERY = gql`
   query restarantsPageQuery($input: RestaurantsInput!) {
@@ -27,17 +29,11 @@ const RESTAURANTS_QUERY = gql`
       totalPages
       totalResults
       results {
-        id
-        name
-        coverImg
-        category {
-          name
-        }
-        address
-        isPromoted
+        ...RestaurantParts
       }
     }
   }
+  ${RESTAURANT_FRAGMENT}
 `;
 
 interface IFormProps {
@@ -72,6 +68,9 @@ export const Restaurants = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>Home | Nuber Eats</title>
+      </Helmet>
       <form
         onSubmit={handleSubmit(onSearchSubmit)}
         className="bg-gray-800 w-full py-40 flex items-center justify-center"

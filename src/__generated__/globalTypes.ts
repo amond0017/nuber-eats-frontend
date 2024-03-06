@@ -33,6 +33,11 @@ export interface RestaurantsInput {
   page: number;
 }
 
+export interface SearchRestaurantInput {
+  page: number;
+  query: string;
+}
+
 export interface VerifyEmailInput {
   code: string;
 }
