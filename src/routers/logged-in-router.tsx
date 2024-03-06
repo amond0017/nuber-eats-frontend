@@ -5,16 +5,20 @@ import { NotFound } from "../pages/404";
 import { Restaurants } from "../pages/client/restaurants";
 import { ConfirmEmail } from "../pages/user/confirm-email";
 import { EditProfile } from "src/pages/user/edit-profile";
+import { Search } from "src/pages/client/search";
 
 const ClientRoutes = [
   <Route path="/" exact key="restaurants">
     <Restaurants />
   </Route>,
-  <Route path="/confirm" exact key="confirm-email">
+  <Route path="/confirm" key="confirm-email">
     <ConfirmEmail />
   </Route>,
-  <Route path="/edit-profile" exact key="edit-profile">
+  <Route path="/edit-profile" key="edit-profile">
     <EditProfile />
+  </Route>,
+  <Route path="/search" key="search">
+    <Search />
   </Route>,
 ];
 
