@@ -6,6 +6,7 @@ import { Restaurants } from "../pages/client/restaurants";
 import { ConfirmEmail } from "../pages/user/confirm-email";
 import { EditProfile } from "src/pages/user/edit-profile";
 import { Search } from "src/pages/client/search";
+import { Category } from "src/pages/client/category";
 
 const ClientRoutes = [
   <Route path="/" exact key="restaurants">
@@ -19,6 +20,9 @@ const ClientRoutes = [
   </Route>,
   <Route path="/search" key="search">
     <Search />
+  </Route>,
+  <Route path="/category/:slug" key="category">
+    <Category />
   </Route>,
 ];
 
