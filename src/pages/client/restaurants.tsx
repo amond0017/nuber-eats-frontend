@@ -1,84 +1,25 @@
-import { gql, useQuery } from "@apollo/client";
-import {
-  restarantsPageQuery,
-  restarantsPageQueryVariables,
-} from "@generated/restarantsPageQuery";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { useForm } from "react-hook-form";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Restaurant } from "src/components/restaurant";
-import { CATEGORY_FRAGMENT, RESTAURANT_FRAGMENT } from "src/fragments";
-
-const RESTAURANTS_QUERY = gql`
-  query restarantsPageQuery($input: RestaurantsInput!) {
-    allCategories {
-      ok
-      error
-      categories {
-        ...CategoryParts
-      }
-    }
-    restaurants(input: $input) {
-      ok
-      error
-      totalPages
-      totalResults
-      results {
-        ...RestaurantParts
-      }
-    }
-  }
-  ${RESTAURANT_FRAGMENT}
-  ${CATEGORY_FRAGMENT}
-`;
-
-interface IFormProps {
-  searchTerm: string;
-}
+import { SearchForm } from "src/components/search-form";
+import { useRestaurants } from "src/hooks/useRestaurants";
 
 export const Restaurants = () => {
   const [page, setPage] = useState(1);
-  const { data, loading } = useQuery<
-    restarantsPageQuery,
-    restarantsPageQueryVariables
-  >(RESTAURANTS_QUERY, {
-    variables: {
-      input: {
-        page,
-      },
-    },
-  });
+  const { data, loading } = useRestaurants({ page });
 
   const onNextPageClick = () => setPage((current) => current + 1);
   const onPrevPageClick = () => setPage((current) => current - 1);
-
-  const history = useHistory();
-  const { register, handleSubmit, getValues } = useForm<IFormProps>();
-  const onSearchSubmit = () => {
-    const { searchTerm } = getValues();
-    history.push({
-      pathname: "/search",
-      search: `?term=${searchTerm}`,
-    });
-  };
 
   return (
     <div>
       <Helmet>
         <title>Home | Nuber Eats</title>
       </Helmet>
-      <form
-        onSubmit={handleSubmit(onSearchSubmit)}
-        className="bg-gray-800 w-full py-40 flex items-center justify-center"
-      >
-        <input
-          {...register("searchTerm", { required: true, min: 3 })}
-          type="search"
-          className="input rounded-md border-0 w-3/4 md:w-3/12"
-          placeholder="Search Restaurants..."
-        />
-      </form>
+
+      <SearchForm />
+
       {!loading && (
         <div className="max-w-screen-2xl pb-20 mx-auto mt-8">
           <div className="flex justify-around max-w-sm mx-auto">
