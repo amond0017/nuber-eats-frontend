@@ -17,6 +17,7 @@ describe("<Button />", () => {
     screen.getByText("Loading...");
 
     // jest
+    // eslint-disable-next-line testing-library/no-node-access
     expect(container.firstChild).toHaveClass("pointer-events-none");
   });
 });
