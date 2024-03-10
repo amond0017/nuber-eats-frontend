@@ -35,10 +35,10 @@ describe("<Login />", () => {
     const email = screen.getByPlaceholderText(/email/i);
 
     // waitFor 에서 userEvent.type() 이 안먹혀서 act 사용함
-    await waitFor(() => {
-      // eslint-disable-next-line testing-library/no-wait-for-side-effects
-      userEvent.type(email, "this@@");
-    });
+    // await waitFor(() => {
+    //   // eslint-disable-next-line testing-library/no-wait-for-side-effects
+    //   userEvent.type(email, "this@@");
+    // });
 
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => {
