@@ -33,7 +33,9 @@ export const Login = () => {
     getValues,
     formState: { errors, isValid },
     handleSubmit,
-  } = useForm<ILoginForm>();
+  } = useForm<ILoginForm>({
+    mode: "onChange",
+  });
 
   const onCompleted = (data: loginMutation) => {
     const {
