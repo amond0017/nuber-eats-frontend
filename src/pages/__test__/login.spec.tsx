@@ -88,11 +88,14 @@ describe("<Login />", () => {
         login: {
           ok: true,
           token: "XXX",
-          error: null,
+          // error: null,
+          // unconveraged 부분. error 확인만 하는 간단한 테스트이므로 코드 작성을 줄이기 위해 새로운 it 생성하지 않음.
+          error: "mutation-error",
         },
       },
     });
     mockedClient.setRequestHandler(LOGIN_MUTATION, mockedMutationResponse);
+    jest.spyOn(Storage.prototype, "setItem");
 
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(() => {
@@ -108,5 +111,14 @@ describe("<Login />", () => {
         password: formData.password,
       },
     });
+
+    // error 있을 시 확인
+    const errorMessage = screen.getByRole("alert");
+    expect(errorMessage).toHaveTextContent(/mutation-error/i);
+
+    expect(localStorage.setItem).toHaveBeenCalledWith("nuber-token", "XXX");
+
+    // eslint-disable-next-line testing-library/no-debugging-utils
+    // debug();
   });
 });
