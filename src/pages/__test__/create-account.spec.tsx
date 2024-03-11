@@ -5,6 +5,21 @@ import { CREATE_ACCOUNT_MUTATION, CreateAccount } from "../create-account";
 import userEvent from "@testing-library/user-event";
 import { UserRole } from "src/__generated__/globalTypes";
 
+// expect 해야하므로 밖으로 뻈음. jest.fn() 을 mock 밖에서 호출하려면 이것을 담고 있는 변수명의 접두어가 mock 이어야 한다.
+const mockPush = jest.fn();
+
+jest.mock("react-router-dom", () => {
+  const realModule = jest.requireActual("react-router-dom");
+  return {
+    ...realModule,
+    useHistory: () => {
+      return {
+        push: mockPush,
+      };
+    },
+  };
+});
+
 describe("<CreateAccount />", () => {
   let mockedClient: MockApolloClient;
   let renderResult: RenderResult;
@@ -97,8 +112,12 @@ describe("<CreateAccount />", () => {
       },
     });
     expect(window.alert).toHaveBeenCalledWith("Account Created! Log in now!");
-
+    expect(mockPush).toHaveBeenCalledWith("/");
     const mutationError = screen.getByRole("alert");
     expect(mutationError).toHaveTextContent("mutation-error");
+  });
+
+  afterAll(() => {
+    jest.clearAllMocks();
   });
 });
