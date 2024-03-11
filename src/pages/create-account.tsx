@@ -106,7 +106,6 @@ export const CreateAccount = () => {
           <input
             {...register("password", {
               required: "Password is required",
-              // minLength: 10,
             })}
             type="password"
             placeholder="Password"

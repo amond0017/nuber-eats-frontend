@@ -1,9 +1,7 @@
-import { RenderResult, render, screen, waitFor } from "@testing-library/react";
+import { RenderResult, render, screen, waitFor } from "src/test-utils";
 import { LOGIN_MUTATION, Login } from "../login";
 import { ApolloProvider } from "@apollo/client";
 import { MockApolloClient, createMockClient } from "mock-apollo-client";
-import { HelmetProvider } from "react-helmet-async";
-import { BrowserRouter as Router } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
 import { act } from "react-dom/test-utils";
 
@@ -15,13 +13,9 @@ describe("<Login />", () => {
       mockedClient = createMockClient();
       // eslint-disable-next-line testing-library/no-wait-for-side-effects, testing-library/no-render-in-setup
       renderResult = render(
-        <HelmetProvider>
-          <Router>
-            <ApolloProvider client={mockedClient}>
-              <Login />
-            </ApolloProvider>
-          </Router>
-        </HelmetProvider>
+        <ApolloProvider client={mockedClient}>
+          <Login />
+        </ApolloProvider>
       );
     });
   });
