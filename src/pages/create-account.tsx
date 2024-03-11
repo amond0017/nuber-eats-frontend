@@ -11,7 +11,7 @@ import {
   createAccountMutationVariables,
 } from "@generated/createAccountMutation";
 
-const CREATE_ACCOUNT_MUTATION = gql`
+export const CREATE_ACCOUNT_MUTATION = gql`
   mutation createAccountMutation($createAccountInput: CreateAccountInput!) {
     createAccount(input: $createAccountInput) {
       ok
@@ -33,6 +33,7 @@ export const CreateAccount = () => {
     formState: { errors, isValid },
     handleSubmit,
   } = useForm<ICreateAccountForm>({
+    mode: "onChange",
     defaultValues: {
       role: UserRole.Client,
     },

@@ -62,7 +62,7 @@ describe("<Login />", () => {
       userEvent.click(submitBtn);
     });
     // eslint-disable-next-line testing-library/no-debugging-utils
-    debug();
+    // debug();
 
     const errorMessage = screen.getByRole("alert");
     expect(errorMessage).toHaveTextContent(/password is required/i);
