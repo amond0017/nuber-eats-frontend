@@ -12,7 +12,7 @@ import { Helmet } from "react-helmet-async";
 import { authTokenVar, isLoggedInVar } from "../apollo";
 import { LOCALSTORAGE_TOKEN } from "../constants";
 
-const LOGIN_MUTATION = gql`
+export const LOGIN_MUTATION = gql`
   mutation loginMutation($loginInput: LoginInput!) {
     login(input: $loginInput) {
       ok
@@ -97,7 +97,6 @@ export const Login = () => {
           <input
             {...register("password", {
               required: "Password is required",
-              // minLength: 10,
             })}
             type="password"
             placeholder="Password"

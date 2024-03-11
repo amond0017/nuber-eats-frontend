@@ -1,7 +1,7 @@
 import { RenderResult, render, screen, waitFor } from "@testing-library/react";
-import { Login } from "../login";
+import { LOGIN_MUTATION, Login } from "../login";
 import { ApolloProvider } from "@apollo/client";
-import { createMockClient } from "mock-apollo-client";
+import { MockApolloClient, createMockClient } from "mock-apollo-client";
 import { HelmetProvider } from "react-helmet-async";
 import { BrowserRouter as Router } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
@@ -9,9 +9,10 @@ import { act } from "react-dom/test-utils";
 
 describe("<Login />", () => {
   let renderResult: RenderResult;
+  let mockedClient: MockApolloClient;
   beforeEach(async () => {
     await waitFor(() => {
-      const mockedClient = createMockClient();
+      mockedClient = createMockClient();
       // eslint-disable-next-line testing-library/no-wait-for-side-effects, testing-library/no-render-in-setup
       renderResult = render(
         <HelmetProvider>
@@ -31,7 +32,7 @@ describe("<Login />", () => {
     });
   });
   it("displays email validation error", async () => {
-    const { debug } = renderResult;
+    // const { debug } = renderResult;
     const email = screen.getByPlaceholderText(/email/i);
 
     // waitFor 에서 userEvent.type() 이 안먹혀서 act 사용함
@@ -45,18 +46,67 @@ describe("<Login />", () => {
       await userEvent.type(email, "this@@");
     });
 
-    // eslint-disable-next-line testing-library/no-debugging-utils
-    // debug();
-
-    // screen.getByText("Please enter a valid email");
     let errorMessage = screen.getByRole("alert");
     expect(errorMessage).toHaveTextContent(/please enter a valid email/i);
 
-    await waitFor(() => {
-      // eslint-disable-next-line testing-library/no-wait-for-side-effects
-      userEvent.clear(email);
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(async () => {
+      await userEvent.clear(email);
+    });
+    errorMessage = screen.getByRole("alert");
+    expect(errorMessage).toHaveTextContent(/email is required/i);
+  });
+
+  it("displays password required errors", async () => {
+    const { debug } = renderResult;
+    const email = screen.getByPlaceholderText(/email/i);
+    const submitBtn = screen.getByRole("button");
+
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(() => {
+      userEvent.type(email, "this@wont.com");
+      userEvent.click(submitBtn);
     });
     // eslint-disable-next-line testing-library/no-debugging-utils
     debug();
+
+    const errorMessage = screen.getByRole("alert");
+    expect(errorMessage).toHaveTextContent(/password is required/i);
+  });
+
+  it("submits form and calls mutation", async () => {
+    const { debug } = renderResult;
+    const email = screen.getByPlaceholderText(/email/i);
+    const password = screen.getByPlaceholderText(/password/i);
+    const submitBtn = screen.getByRole("button");
+    const formData = {
+      email: "real@test.com",
+      password: "123",
+    };
+    const mockedMutationResponse = jest.fn().mockResolvedValue({
+      data: {
+        login: {
+          ok: true,
+          token: "XXX",
+          error: null,
+        },
+      },
+    });
+    mockedClient.setRequestHandler(LOGIN_MUTATION, mockedMutationResponse);
+
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(() => {
+      userEvent.type(email, formData.email);
+      userEvent.type(password, formData.password);
+      userEvent.click(submitBtn);
+    });
+
+    expect(mockedMutationResponse).toHaveBeenCalledTimes(1);
+    expect(mockedMutationResponse).toHaveBeenCalledWith({
+      loginInput: {
+        email: formData.email,
+        password: formData.password,
+      },
+    });
   });
 });
