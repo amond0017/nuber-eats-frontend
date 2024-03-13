@@ -20,14 +20,7 @@ describe("Log In", () => {
   });
 
   it("can fill out the form and log in", () => {
-    user.visit("/");
-    user.findByPlaceholderText(/email/i).type("user@user.com");
-    user.findByPlaceholderText(/password/i).type("12345");
-    user
-      .findByRole("button")
-      .should("not.have.class", "pointer-events-none")
-      .click();
-    user.window().its("localStorage.nuber-token").should("be.a", "string");
+    user.login("user@user.com", "12345");
   });
 
   it("sign up", () => {

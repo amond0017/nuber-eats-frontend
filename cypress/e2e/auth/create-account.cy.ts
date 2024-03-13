@@ -39,10 +39,7 @@ describe("Create Account", () => {
     user.findByRole("button").click();
     // cypress 속도가 너무 빠름. DB 작업 필요하므로 1000ms delay 를 줌.
     user.wait(1000);
-    user.title().should("eq", "Login | Nuber Eats");
-    user.findByPlaceholderText(/email/i).type("user@user.com");
-    user.findByPlaceholderText(/password/i).type("12345");
-    user.findByRole("button").click();
-    user.window().its("localStorage.nuber-token").should("be.a", "string");
+
+    user.login("user@user.com", "12345");
   });
 });
