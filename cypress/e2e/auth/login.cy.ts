@@ -20,7 +20,7 @@ describe("Log In", () => {
   });
 
   it("can fill out the form and log in", () => {
-    user.login("user@user.com", "12345");
+    user.login();
   });
 
   it("sign up", () => {

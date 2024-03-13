@@ -40,6 +40,6 @@ describe("Create Account", () => {
     // cypress 속도가 너무 빠름. DB 작업 필요하므로 1000ms delay 를 줌.
     user.wait(1000);
 
-    user.login("user@user.com", "12345");
+    user.login();
   });
 });

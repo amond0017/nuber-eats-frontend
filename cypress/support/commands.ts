@@ -43,7 +43,7 @@ declare global {
     interface Chainable {
       assertLoggedIn(): Chainable<void>;
       assertLoggedOut(): Chainable<void>;
-      login(email: string, password: string): Chainable<void>;
+      login(email?: string, password?: string): Chainable<void>;
     }
   }
 }
@@ -56,7 +56,7 @@ Cypress.Commands.add("assertLoggedOut", () => {
   cy.window().its("localStorage.nuber-token").should("be.undefined");
 });
 
-Cypress.Commands.add("login", (email, password) => {
+Cypress.Commands.add("login", (email = "user@user.com", password = "12345") => {
   cy.visit("/");
   cy.assertLoggedOut();
   cy.title().should("eq", "Login | Nuber Eats");
