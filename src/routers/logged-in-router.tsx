@@ -8,26 +8,43 @@ import { EditProfile } from "src/pages/user/edit-profile";
 import { Search } from "src/pages/client/search";
 import { Category } from "src/pages/client/category";
 import { Restaurant } from "src/pages/client/restaurant";
+import { MyRestaurants } from "src/pages/owner/my-restaurants";
 
-const ClientRoutes = [
-  <Route path="/" exact key="restaurants">
-    <Restaurants />
-  </Route>,
-  <Route path="/confirm" key="confirm-email">
-    <ConfirmEmail />
-  </Route>,
-  <Route path="/edit-profile" key="edit-profile">
-    <EditProfile />
-  </Route>,
-  <Route path="/search" key="search">
-    <Search />
-  </Route>,
-  <Route path="/category/:slug" key="category">
-    <Category />
-  </Route>,
-  <Route path="/restaurants/:id" key="restaurant">
-    <Restaurant />
-  </Route>,
+const clientRoutes = [
+  {
+    path: "/",
+    component: <Restaurants />,
+  },
+  {
+    path: "/search",
+    component: <Search />,
+  },
+  {
+    path: "/category/:slug",
+    component: <Category />,
+  },
+  {
+    path: "/restaurants/:id",
+    component: <Restaurant />,
+  },
+];
+
+const commonRoutes = [
+  {
+    path: "/confirm",
+    component: <ConfirmEmail />,
+  },
+  {
+    path: "/edit-profile",
+    component: <EditProfile />,
+  },
+];
+
+const restaurantRoutes = [
+  {
+    path: "/",
+    component: <MyRestaurants />,
+  },
 ];
 
 const LoggedInRouter = () => {
@@ -43,8 +60,25 @@ const LoggedInRouter = () => {
     <Router>
       <Header />
       <Switch>
-        {data.me.role === "Client" && ClientRoutes}
-        {/* <Redirect to="/" /> */}
+        {data.me.role === "Client" &&
+          clientRoutes.map((route) => (
+            <Route key={route.path} path={route.path}>
+              {route.component}
+            </Route>
+          ))}
+
+        {data.me.role === "Owner" &&
+          restaurantRoutes.map((route) => (
+            <Route key={route.path} path={route.path}>
+              {route.component}
+            </Route>
+          ))}
+
+        {commonRoutes.map((route) => (
+          <Route key={route.path} path={route.path}>
+            {route.component}
+          </Route>
+        ))}
         <Route>
           <NotFound />
         </Route>
