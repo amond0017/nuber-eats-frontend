@@ -9,6 +9,7 @@ import { Search } from "src/pages/client/search";
 import { Category } from "src/pages/client/category";
 import { Restaurant } from "src/pages/client/restaurant";
 import { MyRestaurants } from "src/pages/owner/my-restaurants";
+import { AddRestaurant } from "src/pages/owner/add-restaurant";
 
 const clientRoutes = [
   {
@@ -45,6 +46,10 @@ const restaurantRoutes = [
     path: "/",
     component: <MyRestaurants />,
   },
+  {
+    path: "/add-restaurant",
+    component: <AddRestaurant />,
+  },
 ];
 
 const LoggedInRouter = () => {
@@ -62,14 +67,14 @@ const LoggedInRouter = () => {
       <Switch>
         {data.me.role === "Client" &&
           clientRoutes.map((route) => (
-            <Route key={route.path} path={route.path}>
+            <Route exact key={route.path} path={route.path}>
               {route.component}
             </Route>
           ))}
 
         {data.me.role === "Owner" &&
           restaurantRoutes.map((route) => (
-            <Route key={route.path} path={route.path}>
+            <Route exact key={route.path} path={route.path}>
               {route.component}
             </Route>
           ))}
