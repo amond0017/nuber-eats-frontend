@@ -6,8 +6,8 @@
 }
 
 .container {
-  /* @apply max-w-screen-2xl mx-auto; */
-  @apply max-w-screen-2xl mx-auto h-screen flex items-center flex-col mt-10 lg:mt-28;
+  @apply max-w-screen-2xl mx-auto;
+  /* @apply max-w-screen-2xl mx-auto h-screen flex items-center flex-col mt-10 lg:mt-28; */
 }
 
 .link {

@@ -48,7 +48,7 @@ export const MyRestaurants = () => {
 
         {data?.myRestaurants.ok && data.myRestaurants.results?.length === 0 ? (
           <>
-            <h4 className="">You have no restaurants.</h4>
+            <h4 className="text-xl mb-5">You have no restaurants.</h4>
             <Link
               className="text-lime-600 hover:underline"
               to="/add-restaurant"
