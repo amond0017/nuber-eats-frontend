@@ -1,4 +1,4 @@
-import { gql, useMutation } from "@apollo/client";
+import { gql, useApolloClient, useMutation } from "@apollo/client";
 import {
   createRestaurant,
   createRestaurantVariables,
@@ -8,6 +8,8 @@ import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
 import { Button } from "src/components/button";
 import { FormError } from "src/components/form-error";
+import { MY_RESTAURANTS_QUERY } from "./my-restaurants";
+import { useHistory } from "react-router-dom";
 
 const CREATE_RESTAURANT_MUTATION = gql`
   mutation createRestaurant($input: CreateRestaurantInput!) {
@@ -27,13 +29,55 @@ interface IFormProps {
 }
 
 export const AddRestaurant = () => {
+  const client = useApolloClient();
+  const history = useHistory();
+
+  const [imageUrl, setImageUrl] = useState("");
+
   const onCompleted = (data: createRestaurant) => {
     const {
       createRestaurant: { ok, restaurantId },
     } = data;
     if (ok) {
+      const { name, categoryName, address } = getValues();
       setUploading(false);
+
       // fake
+      const queryResult = client.readQuery({
+        query: MY_RESTAURANTS_QUERY,
+        variables: { input: { page: 1 } }, // variables 가 있는 쿼리에 variables 명시하지 않으면 null 을 리턴한다.
+      });
+      client.writeQuery({
+        query: MY_RESTAURANTS_QUERY,
+        data: {
+          ...queryResult,
+          myRestaurants: {
+            ...queryResult.myRestaurants,
+            results: [
+              {
+                id: restaurantId,
+                name,
+                coverImg: imageUrl,
+                category: {
+                  name: categoryName,
+                  __typename: "Category",
+                },
+                address,
+                isPromoted: false,
+                __typename: "Restaurant",
+              },
+              ...queryResult.myRestaurants.results,
+            ],
+          },
+        },
+        variables: {
+          input: {
+            page: 1,
+          },
+        },
+      });
+
+      history.push("/");
     }
   };
   const [createRestaurantMutation, { data }] = useMutation<
@@ -70,7 +114,7 @@ export const AddRestaurant = () => {
           body: formBody,
         })
       ).json();
-      setUploading(false);
+      setImageUrl(coverImg);
 
       createRestaurantMutation({
         variables: {

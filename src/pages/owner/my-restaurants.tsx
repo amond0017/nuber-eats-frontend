@@ -1,9 +1,9 @@
-import { gql, useApolloClient, useQuery } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 import {
   myRestaurantsPageQuery,
   myRestaurantsPageQueryVariables,
 } from "@generated/myRestaurantsPageQuery";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { Restaurant } from "src/components/restaurant";
@@ -37,23 +37,6 @@ export const MyRestaurants = () => {
       },
     },
   });
-
-  const client = useApolloClient();
-
-  useEffect(() => {
-    const queryResult = client.readQuery({
-      query: MY_RESTAURANTS_QUERY,
-      variables: { input: { page: 1 } }, // variables 가 있는 쿼리에 variables 명시하지 않으면 null 을 리턴한다.
-    });
-    console.log(queryResult);
-    client.writeQuery({
-      query: MY_RESTAURANTS_QUERY,
-      data: {
-        ...queryResult,
-        // results: [],
-      },
-    });
-  }, []);
 
   return (
     <div>
