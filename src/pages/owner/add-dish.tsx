@@ -1,11 +1,12 @@
 import { gql, useMutation } from "@apollo/client";
 import { createDish, createDishVariables } from "@generated/createDish";
 import { Helmet } from "react-helmet-async";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { useHistory, useParams } from "react-router-dom";
 import { Button } from "src/components/button";
 import { FormError } from "src/components/form-error";
 import { MY_RESTAURANT_QUERY } from "./my-restaurant";
+import { DishOptionInputType } from "@generated/globalTypes";
 
 const CREATE_DISH_MUTATION = gql`
   mutation createDish($input: CreateDishInput!) {
@@ -24,6 +25,7 @@ interface IForm {
   name: string;
   price: string;
   description: string;
+  options?: DishOptionInputType[];
 }
 
 export const AddDish = () => {
@@ -50,6 +52,7 @@ export const AddDish = () => {
   });
 
   const {
+    control,
     register,
     getValues,
     handleSubmit,
@@ -58,8 +61,32 @@ export const AddDish = () => {
     mode: "onChange",
   });
 
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "options",
+  });
+
   const onSubmit = () => {
-    const { name, price, description } = getValues();
+    const { name, price, description, options } = getValues();
+
+    let convertedOptions: DishOptionInputType[] = [];
+
+    // 옵션 있을 때 처리
+    if (!!options?.length) {
+      convertedOptions = options.map((option) => ({
+        name: option.name,
+        ...(!!option.extra && { extra: +option.extra }),
+      }));
+    }
+
+    // const input = {
+    //   name,
+    //   price: +price,
+    //   description,
+    //   restaurantId: +restaurantId,
+    //   ...(!!options?.length && { options: convertedOptions }),
+    // };
+    // console.log("input", input);
 
     createDishMutation({
       variables: {
@@ -68,9 +95,18 @@ export const AddDish = () => {
           price: +price,
           description,
           restaurantId: +restaurantId,
+          ...(!!options?.length && { options: convertedOptions }),
         },
       },
     });
+  };
+
+  const onAddOptionClick = () => {
+    append({ name: "" });
+  };
+
+  const onDeleteClick = (idToDelete: number) => {
+    remove(idToDelete);
   };
 
   return (
@@ -106,6 +142,40 @@ export const AddDish = () => {
             type="text"
             placeholder="Description"
           />
+
+          <div className="my-10">
+            <h4 className="font-medium mb-3 text-lg">Dish Options</h4>
+            <span
+              onClick={onAddOptionClick}
+              className="cursor-pointer text-white bg-gray-900 py-1 px-2 mt-5"
+            >
+              Add Dish Option
+            </span>
+            {!!fields.length &&
+              fields.map((field, index) => (
+                <div key={field.id} className="mt-5">
+                  <input
+                    {...register(`options.${index}.name`, { required: true })}
+                    className="py-2 px-4 focus:outline-none mr-3 focus:border-gray-600 border-2"
+                    type="text"
+                    placeholder="Option Name"
+                  />
+                  <input
+                    {...register(`options.${index}.extra`)}
+                    className="py-2 px-4 focus:outline-none mr-3 focus:border-gray-600 border-2"
+                    type="number"
+                    min={0}
+                    placeholder="Option Extra"
+                  />
+                  <span
+                    className="cursor-pointer text-white bg-red-500 py-3 px-4 mt-5"
+                    onClick={() => onDeleteClick(index)}
+                  >
+                    Delete Option
+                  </span>
+                </div>
+              ))}
+          </div>
 
           <Button
             loading={loading}
