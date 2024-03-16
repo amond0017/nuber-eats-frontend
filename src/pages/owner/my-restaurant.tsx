@@ -4,7 +4,7 @@ import React from "react";
 import { Link, useParams } from "react-router-dom";
 import { DISH_FRAGMENT, RESTAURANT_FRAGMENT } from "src/fragments";
 
-const MY_RESTAURANT_QUERY = gql`
+export const MY_RESTAURANT_QUERY = gql`
   query myRestaurant($input: MyRestaurantInput!) {
     myRestaurant(input: $input) {
       ok
@@ -52,7 +52,10 @@ export const MyRestaurant = () => {
         <h2 className="text-4xl font-medium mb-10">
           {data?.myRestaurant.restaurant?.name || "Loading..."}
         </h2>
-        <Link to={``} className="mr-8 text-white bg-gray-800 py-3 px-10">
+        <Link
+          to={`/restaurants/${id}/add-dish`}
+          className="mr-8 text-white bg-gray-800 py-3 px-10"
+        >
           Add Dish &rarr;
         </Link>
         <Link to={``} className="text-white bg-lime-700 py-3 px-10">
@@ -60,7 +63,7 @@ export const MyRestaurant = () => {
         </Link>
         <div className="mt-10">
           {data?.myRestaurant.restaurant?.menu.length === 0 ? (
-            <h4 className="text-xl mb-5">Please update a dish</h4>
+            <h4 className="text-xl mb-5">Please upload a dish</h4>
           ) : null}
         </div>
       </div>
