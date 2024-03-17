@@ -85,9 +85,6 @@ export const AddRestaurant = () => {
     createRestaurantVariables
   >(CREATE_RESTAURANT_MUTATION, {
     onCompleted,
-    // onError: (e) => {
-    //   console.log("mutation error!", e);
-    // },
   });
 
   const {
