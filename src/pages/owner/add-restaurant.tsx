@@ -1,4 +1,4 @@
-import { gql, useApolloClient, useMutation } from "@apollo/client";
+import { ApolloError, gql, useApolloClient, useMutation } from "@apollo/client";
 import {
   createRestaurant,
   createRestaurantVariables,
@@ -82,26 +82,29 @@ export const AddRestaurant = () => {
       history.push("/");
     } else if (error) setErrorMessage(error);
   };
+
+  const onError = (e: ApolloError) => {
+    setUploading(false);
+    setErrorMessage(() => {
+      if (!!e.graphQLErrors.length) {
+        const {
+          extensions: { originalError },
+        } = e.graphQLErrors[0] as Record<string, any>;
+
+        return (
+          (!!originalError?.message.length && originalError?.message[0]) ||
+          "Something is wrong."
+        );
+      }
+    });
+  };
+
   const [createRestaurantMutation] = useMutation<
     createRestaurant,
     createRestaurantVariables
   >(CREATE_RESTAURANT_MUTATION, {
     onCompleted,
-    onError: (e) => {
-      setUploading(false);
-      setErrorMessage(() => {
-        if (!!e.graphQLErrors.length) {
-          const {
-            extensions: { originalError },
-          } = e.graphQLErrors[0] as Record<string, any>;
-
-          return (
-            (!!originalError?.message.length && originalError?.message[0]) ||
-            "Something is wrong."
-          );
-        }
-      });
-    },
+    onError,
   });
 
   const {
