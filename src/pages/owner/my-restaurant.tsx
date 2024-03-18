@@ -74,7 +74,6 @@ export const MyRestaurant = () => {
                   price={dish.price}
                 />
               ))}
-              {/* <Dish /> */}
             </div>
           )}
         </div>

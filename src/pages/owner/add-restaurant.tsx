@@ -33,14 +33,16 @@ export const AddRestaurant = () => {
   const history = useHistory();
 
   const [imageUrl, setImageUrl] = useState("");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const onCompleted = (data: createRestaurant) => {
     const {
-      createRestaurant: { ok, restaurantId },
+      createRestaurant: { ok, restaurantId, error },
     } = data;
+    setUploading(false);
+
     if (ok) {
       const { name, categoryName, address } = getValues();
-      setUploading(false);
 
       // fake
       const queryResult = client.readQuery({
@@ -78,20 +80,35 @@ export const AddRestaurant = () => {
       });
 
       history.push("/");
-    }
+    } else if (error) setErrorMessage(error);
   };
-  const [createRestaurantMutation, { data }] = useMutation<
+  const [createRestaurantMutation] = useMutation<
     createRestaurant,
     createRestaurantVariables
   >(CREATE_RESTAURANT_MUTATION, {
     onCompleted,
+    onError: (e) => {
+      setUploading(false);
+      setErrorMessage(() => {
+        if (!!e.graphQLErrors.length) {
+          const {
+            extensions: { originalError },
+          } = e.graphQLErrors[0] as Record<string, any>;
+
+          return (
+            (!!originalError?.message.length && originalError?.message[0]) ||
+            "Something is wrong."
+          );
+        }
+      });
+    },
   });
 
   const {
     register,
     getValues,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { isValid },
   } = useForm<IFormProps>({
     mode: "onChange",
   });
@@ -174,9 +191,7 @@ export const AddRestaurant = () => {
             actionText="Create Restaurant"
           />
 
-          {data?.createRestaurant?.error && (
-            <FormError errorMessage={data.createRestaurant.error} />
-          )}
+          {!!errorMessage && <FormError errorMessage={errorMessage} />}
         </form>
       </div>
     </div>
