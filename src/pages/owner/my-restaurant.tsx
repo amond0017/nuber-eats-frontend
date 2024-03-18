@@ -1,11 +1,36 @@
 import { gql, useQuery } from "@apollo/client";
 import { myRestaurant, myRestaurantVariables } from "@generated/myRestaurant";
-import React from "react";
 import { Link, useParams } from "react-router-dom";
-import { VictoryAxis, VictoryBar, VictoryChart } from "victory";
+import {
+  VictoryAxis,
+  VictoryChart,
+  VictoryLabel,
+  VictoryLine,
+  VictoryPie,
+  VictoryTheme,
+  VictoryVoronoiContainer,
+} from "victory";
 
 import { Dish } from "src/components/dish";
-import { DISH_FRAGMENT, RESTAURANT_FRAGMENT } from "src/fragments";
+import {
+  DISH_FRAGMENT,
+  ORDERS_FRAGMENT,
+  RESTAURANT_FRAGMENT,
+} from "src/fragments";
+
+const chartData = [
+  { x: 1, y: 3000 },
+  { x: 2, y: 1500 },
+  { x: 3, y: 4250 },
+  { x: 4, y: 1250 },
+  { x: 5, y: 2300 },
+  { x: 6, y: 7150 },
+  { x: 7, y: 7830 },
+  { x: 8, y: 7830 },
+  { x: 9, y: 7830 },
+  { x: 10, y: 7830 },
+  { x: 11, y: 7830 },
+];
 
 export const MY_RESTAURANT_QUERY = gql`
   query myRestaurant($input: MyRestaurantInput!) {
@@ -17,11 +42,15 @@ export const MY_RESTAURANT_QUERY = gql`
         menu {
           ...DishParts
         }
+        orders {
+          ...OrderParts
+        }
       }
     }
   }
   ${RESTAURANT_FRAGMENT}
   ${DISH_FRAGMENT}
+  ${ORDERS_FRAGMENT}
 `;
 
 interface IParams {
@@ -71,6 +100,7 @@ export const MyRestaurant = () => {
             <div className="grid mt-16 md:grid-cols-3 gap-x-5 gap-y-10">
               {data?.myRestaurant.restaurant?.menu.map((dish) => (
                 <Dish
+                  key={dish.id}
                   name={dish.name}
                   description={dish.description}
                   price={dish.price}
@@ -81,21 +111,40 @@ export const MyRestaurant = () => {
         </div>
         <div className="mt-20 mb-10">
           <h4 className="text-center text-2xl font-medium">Sales</h4>
-          <div className="max-w-lg w-full mx-auto">
-            <VictoryChart domainPadding={20}>
-              <VictoryAxis
-                label="Amount of Money"
-                dependentAxis
-                tickValues={[20, 30, 40, 50, 60]}
+          <div className="mx-auto">
+            <VictoryChart
+              theme={VictoryTheme.material}
+              height={500}
+              width={window.innerWidth}
+              domainPadding={50}
+              containerComponent={<VictoryVoronoiContainer />}
+            >
+              <VictoryLine
+                labels={({ datum }) => `$${datum.y}`}
+                labelComponent={
+                  <VictoryLabel
+                    style={{ fontSize: 18 }}
+                    renderInPortal
+                    dy={-20}
+                  />
+                }
+                data={data?.myRestaurant.restaurant?.orders?.map((order) => ({
+                  x: order.createdAt,
+                  y: order.total,
+                }))}
+                interpolation="natural"
+                style={{
+                  data: {
+                    strokeWidth: 5,
+                  },
+                }}
               />
-              <VictoryAxis label="Days of Life" />
-              <VictoryBar
-                data={[
-                  { x: 10, y: 20 },
-                  { x: 20, y: 50 },
-                  { x: 35, y: 60 },
-                  { x: 45, y: 99 },
-                ]}
+              <VictoryAxis
+                tickLabelComponent={<VictoryLabel renderInPortal />}
+                style={{ tickLabels: { fontSize: 20 } }}
+                tickFormat={(tick: any) =>
+                  new Date(tick).toLocaleDateString("ko")
+                }
               />
             </VictoryChart>
           </div>
