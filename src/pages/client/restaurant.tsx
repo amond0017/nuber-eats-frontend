@@ -1,7 +1,7 @@
 import { gql, useQuery } from "@apollo/client";
 import { CreateOrderItemInput } from "@generated/globalTypes";
 import { restaurant, restaurantVariables } from "@generated/restaurant";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Dish } from "src/components/dish";
 import { DISH_FRAGMENT, RESTAURANT_FRAGMENT } from "src/fragments";
@@ -56,9 +56,25 @@ export const Restaurant = () => {
     setOrderStarted(true);
   };
 
+  const isSelected = useCallback(
+    (dishId: number) =>
+      Boolean(orderItems.find((order) => order.dishId === dishId)),
+    [orderItems]
+  );
+
   const addItemToOrder = (dishId: number) => {
-    setOrderItems((current) => [{ dishId }]);
+    if (isSelected(dishId)) {
+      return;
+    }
+    setOrderItems((current) => [{ dishId }, ...current]);
   };
+
+  const removeFromOrder = (dishId: number) => {
+    setOrderItems((current) =>
+      current.filter((order) => order.dishId !== dishId)
+    );
+  };
+
   console.log(orderItems);
 
   return (
@@ -82,11 +98,12 @@ export const Restaurant = () => {
 
       <div className="container pb-32 flex flex-col items-end mt-20">
         <button onClick={triggerStartOrder} className="btn px-10">
-          Start Order
+          {orderStarted ? "Ordering" : "Start Order"}
         </button>
         <div className="w-full grid mt-16 md:grid-cols-3 gap-x-5 gap-y-10">
           {data?.restaurant.restaurant?.menu.map((dish) => (
             <Dish
+              isSelected={isSelected(dish.id)}
               id={dish.id}
               orderStarted={orderStarted}
               key={dish.id}
@@ -96,6 +113,7 @@ export const Restaurant = () => {
               isCustomer
               options={dish.options}
               addItemToOrder={addItemToOrder}
+              removeFromOrder={removeFromOrder}
             />
           ))}
         </div>
