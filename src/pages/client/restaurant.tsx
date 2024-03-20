@@ -56,10 +56,14 @@ export const Restaurant = () => {
     setOrderStarted(true);
   };
 
-  const isSelected = useCallback(
-    (dishId: number) =>
-      Boolean(orderItems.find((order) => order.dishId === dishId)),
+  const getItem = useCallback(
+    (dishId: number) => orderItems.find((order) => order.dishId === dishId),
     [orderItems]
+  );
+
+  const isSelected = useCallback(
+    (dishId: number) => Boolean(getItem(dishId)),
+    [getItem]
   );
 
   const addItemToOrder = (dishId: number) => {
@@ -73,6 +77,19 @@ export const Restaurant = () => {
     setOrderItems((current) =>
       current.filter((order) => order.dishId !== dishId)
     );
+  };
+
+  const addOptionToItem = (dishId: number, option: any) => {
+    if (!isSelected(dishId)) {
+      return;
+    }
+    // 기존 item 삭제 후 option 적용된 새 아이템 추가. (state 를 mutate 하지 않기 위해)
+    const oldItem = getItem(dishId);
+    removeFromOrder(dishId);
+    setOrderItems((current) => [
+      { dishId, options: [...(oldItem?.options || []), option] },
+      ...current,
+    ]);
   };
 
   console.log(orderItems);
@@ -114,6 +131,7 @@ export const Restaurant = () => {
               options={dish.options}
               addItemToOrder={addItemToOrder}
               removeFromOrder={removeFromOrder}
+              addOptionToItem={addOptionToItem}
             />
           ))}
         </div>
