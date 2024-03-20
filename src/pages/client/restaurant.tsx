@@ -85,11 +85,32 @@ export const Restaurant = () => {
     }
     // 기존 item 삭제 후 option 적용된 새 아이템 추가. (state 를 mutate 하지 않기 위해)
     const oldItem = getItem(dishId);
-    removeFromOrder(dishId);
-    setOrderItems((current) => [
-      { dishId, options: [...(oldItem?.options || []), option] },
-      ...current,
-    ]);
+    if (oldItem) {
+      const hasOption = Boolean(
+        oldItem.options?.find((oldOption) => oldOption.name === option.name)
+      );
+      if (!hasOption) {
+        removeFromOrder(dishId);
+        setOrderItems((current) => [
+          { dishId, options: [...(oldItem?.options || []), option] },
+          ...current,
+        ]);
+      }
+    }
+  };
+
+  const getOptionFromItem = (
+    item: CreateOrderItemInput,
+    optionName: string
+  ) => {
+    return item.options?.find((option) => option.name === optionName);
+  };
+
+  const isOptionSelected = (dishId: number, optionName: string) => {
+    const item = getItem(dishId);
+    if (item) {
+      return Boolean(getOptionFromItem(item, optionName));
+    }
   };
 
   console.log(orderItems);
@@ -131,8 +152,26 @@ export const Restaurant = () => {
               options={dish.options}
               addItemToOrder={addItemToOrder}
               removeFromOrder={removeFromOrder}
-              addOptionToItem={addOptionToItem}
-            />
+            >
+              {dish.options?.map((option, index) => (
+                <span
+                  onClick={() =>
+                    addOptionToItem
+                      ? addOptionToItem(dish.id, { name: option.name })
+                      : null
+                  }
+                  className={`flex border items-center ${
+                    isOptionSelected(dish.id, option.name)
+                      ? "border-gray-800"
+                      : ""
+                  }`}
+                  key={index.toString()}
+                >
+                  <h6 className="mr-2">{option.name}</h6>
+                  <h6 className="text-sm opacity-75">(${option.extra || 0})</h6>
+                </span>
+              ))}
+            </Dish>
           ))}
         </div>
       </div>

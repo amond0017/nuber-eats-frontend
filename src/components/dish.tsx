@@ -1,5 +1,5 @@
 import { restaurant_restaurant_restaurant_menu_options } from "@generated/restaurant";
-import React from "react";
+import React, { ReactNode } from "react";
 
 interface IDishProps {
   id?: number;
@@ -12,7 +12,7 @@ interface IDishProps {
   options?: restaurant_restaurant_restaurant_menu_options[] | null;
   addItemToOrder?: (dishId: number) => void;
   removeFromOrder?: (dishId: number) => void;
-  addOptionToItem?: (dishId: number, option: any) => void;
+  children?: ReactNode;
 }
 
 export const Dish: React.FC<IDishProps> = ({
@@ -26,7 +26,7 @@ export const Dish: React.FC<IDishProps> = ({
   options,
   addItemToOrder,
   removeFromOrder,
-  addOptionToItem,
+  children: dishOptions,
 }) => {
   const onClick = () => {
     if (orderStarted) {
@@ -58,18 +58,7 @@ export const Dish: React.FC<IDishProps> = ({
       {isCustomer && !!options?.length && (
         <div>
           <h5 className="mt-8 mb-3 font-medium">Dish Options</h5>
-          {options?.map(({ name, extra, choices }, index) => (
-            <span
-              onClick={() =>
-                addOptionToItem ? addOptionToItem(id, { name }) : null
-              }
-              className="flex border items-center"
-              key={index.toString()}
-            >
-              <h6 className="mr-2">{name}</h6>
-              <h6 className="text-sm opacity-75">(${extra || 0})</h6>
-            </span>
-          ))}
+          {dishOptions}
         </div>
       )}
     </div>
