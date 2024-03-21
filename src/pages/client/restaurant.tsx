@@ -1,8 +1,9 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
+import { createOrder, createOrderVariables } from "@generated/createOrder";
 import { CreateOrderItemInput } from "@generated/globalTypes";
 import { restaurant, restaurantVariables } from "@generated/restaurant";
 import React, { useCallback, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { Dish } from "src/components/dish";
 import { DishOption } from "src/components/dish-option";
 import { DISH_FRAGMENT, RESTAURANT_FRAGMENT } from "src/fragments";
@@ -28,6 +29,7 @@ const CREATE_ORDER_MUTATION = gql`
   mutation createOrder($input: CreateOrderInput!) {
     createOrder(input: $input) {
       ok
+      orderId
       error
     }
   }
@@ -39,6 +41,8 @@ interface IRestaurantParams {
 
 export const Restaurant = () => {
   const params = useParams<IRestaurantParams>();
+  const history = useHistory();
+
   const [orderStarted, setOrderStarted] = useState(false);
   const [orderItems, setOrderItems] = useState<CreateOrderItemInput[]>([]);
 
@@ -52,6 +56,23 @@ export const Restaurant = () => {
       },
     }
   );
+
+  const onCompleted = (data: createOrder) => {
+    const {
+      createOrder: { ok, orderId },
+    } = data;
+    if (ok) {
+      alert("order created");
+      history.push(`/orders/${orderId}`);
+    }
+  };
+
+  const [createOrderMutation, { loading: placingOrder }] = useMutation<
+    createOrder,
+    createOrderVariables
+  >(CREATE_ORDER_MUTATION, {
+    onCompleted,
+  });
 
   const triggerStartOrder = () => {
     setOrderStarted(true);
@@ -134,7 +155,29 @@ export const Restaurant = () => {
     }
   };
 
-  console.log(orderItems);
+  const triggerCancelOrder = () => {
+    setOrderStarted(false);
+    setOrderItems([]);
+  };
+
+  const triggerConfirmOrder = () => {
+    if (orderItems.length === 0) {
+      alert("Can't place empty order");
+      return;
+    }
+
+    const ok = window.confirm("You are about to place an order");
+    if (ok) {
+      createOrderMutation({
+        variables: {
+          input: {
+            restaurantId: +params.id,
+            items: orderItems,
+          },
+        },
+      });
+    }
+  };
 
   return (
     <div>
@@ -156,9 +199,24 @@ export const Restaurant = () => {
       </div>
 
       <div className="container pb-32 flex flex-col items-end mt-20">
-        <button onClick={triggerStartOrder} className="btn px-10">
-          {orderStarted ? "Ordering" : "Start Order"}
-        </button>
+        {!orderStarted && (
+          <button onClick={triggerStartOrder} className="btn px-10">
+            Start Order
+          </button>
+        )}
+        {orderStarted && (
+          <div className="flex items-center">
+            <button onClick={triggerConfirmOrder} className="btn px-10 mr-3">
+              Confirm Order
+            </button>
+            <button
+              onClick={triggerCancelOrder}
+              className="btn px-10 bg-black hover:bg-black"
+            >
+              Cancel Order
+            </button>
+          </div>
+        )}
         <div className="w-full grid mt-16 md:grid-cols-3 gap-x-5 gap-y-10">
           {data?.restaurant.restaurant?.menu.map((dish) => (
             <Dish
