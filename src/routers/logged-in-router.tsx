@@ -12,6 +12,7 @@ import { MyRestaurants } from "src/pages/owner/my-restaurants";
 import { AddRestaurant } from "src/pages/owner/add-restaurant";
 import { MyRestaurant } from "src/pages/owner/my-restaurant";
 import { AddDish } from "src/pages/owner/add-dish";
+import { Order } from "src/pages/order";
 
 const clientRoutes = [
   {
@@ -40,6 +41,10 @@ const commonRoutes = [
   {
     path: "/edit-profile",
     component: <EditProfile />,
+  },
+  {
+    path: "/orders/:id",
+    component: <Order />,
   },
 ];
 
