@@ -29,7 +29,8 @@
   },
   "scripts": {
     "start": "npm run apollo:codegen & react-scripts start",
-    "apollo:codegen": "rimraf src/__generated__ && apollo client:codegen src/__generated__ --target=typescript --outputFlat",
+    "apollo:codegen": "rimraf src/__generated__ && npm run generate",
+    "generate": "graphql-codegen",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "test:coverage": "npm run test -- --coverage --watchAll=false",
@@ -55,6 +56,9 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@graphql-codegen/cli": "^5.0.2",
+    "@graphql-codegen/client-preset": "^4.2.4",
+    "@parcel/watcher": "^2.4.1",
     "@testing-library/cypress": "^10.0.1",
     "@types/react-helmet": "^6.1.11",
     "@types/react-router-dom": "^5.3.3",
