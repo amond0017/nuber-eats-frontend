@@ -1,8 +1,4 @@
 import { ApolloError, gql, useApolloClient, useMutation } from "@apollo/client";
-import {
-  createRestaurant,
-  createRestaurantVariables,
-} from "@generated/createRestaurant";
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
@@ -10,6 +6,10 @@ import { Button } from "src/components/button";
 import { FormError } from "src/components/form-error";
 import { MY_RESTAURANTS_QUERY } from "./my-restaurants";
 import { useHistory } from "react-router-dom";
+import {
+  CreateRestaurantMutation,
+  CreateRestaurantMutationVariables,
+} from "@generated/graphql";
 
 const CREATE_RESTAURANT_MUTATION = gql`
   mutation createRestaurant($input: CreateRestaurantInput!) {
@@ -35,7 +35,7 @@ export const AddRestaurant = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const onCompleted = (data: createRestaurant) => {
+  const onCompleted = (data: CreateRestaurantMutation) => {
     const {
       createRestaurant: { ok, restaurantId, error },
     } = data;
@@ -100,8 +100,8 @@ export const AddRestaurant = () => {
   };
 
   const [createRestaurantMutation] = useMutation<
-    createRestaurant,
-    createRestaurantVariables
+    CreateRestaurantMutation,
+    CreateRestaurantMutationVariables
   >(CREATE_RESTAURANT_MUTATION, {
     onCompleted,
     onError,

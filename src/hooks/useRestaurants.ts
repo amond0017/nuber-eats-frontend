@@ -1,9 +1,9 @@
 import { gql, useQuery } from "@apollo/client";
-import { RestaurantsInput } from "@generated/globalTypes";
 import {
-  restarantsPageQuery,
-  restarantsPageQueryVariables,
-} from "@generated/restarantsPageQuery";
+  RestarantsPageQueryQuery,
+  RestarantsPageQueryQueryVariables,
+  RestaurantsInput,
+} from "@generated/graphql";
 import { CATEGORY_FRAGMENT, RESTAURANT_FRAGMENT } from "src/fragments";
 
 interface IUseRestaurantsProps extends RestaurantsInput {}
@@ -32,7 +32,7 @@ const RESTAURANTS_QUERY = gql`
 `;
 
 export const useRestaurants = ({ page }: IUseRestaurantsProps) => {
-  return useQuery<restarantsPageQuery, restarantsPageQueryVariables>(
+  return useQuery<RestarantsPageQueryQuery, RestarantsPageQueryQueryVariables>(
     RESTAURANTS_QUERY,
     {
       variables: {

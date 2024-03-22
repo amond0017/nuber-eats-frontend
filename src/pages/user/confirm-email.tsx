@@ -1,5 +1,8 @@
 import { gql, useApolloClient, useMutation } from "@apollo/client";
-import { verifyEmail, verifyEmailVariables } from "@generated/verifyEmail";
+import {
+  VerifyEmailMutation,
+  VerifyEmailMutationVariables,
+} from "@generated/graphql";
 import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useHistory } from "react-router-dom";
@@ -19,7 +22,7 @@ export const ConfirmEmail = () => {
   const { data: userData } = useMe();
   const client = useApolloClient(); // apollo client 불러오기
   const history = useHistory();
-  const onCompleted = (data: verifyEmail) => {
+  const onCompleted = (data: VerifyEmailMutation) => {
     const {
       verifyEmail: { ok },
     } = data;
@@ -40,12 +43,12 @@ export const ConfirmEmail = () => {
       history.push("/");
     }
   };
-  const [verifyEmail] = useMutation<verifyEmail, verifyEmailVariables>(
-    VERIFY_EMAIL_MUTATION,
-    {
-      onCompleted,
-    }
-  );
+  const [verifyEmail] = useMutation<
+    VerifyEmailMutation,
+    VerifyEmailMutationVariables
+  >(VERIFY_EMAIL_MUTATION, {
+    onCompleted,
+  });
 
   const query = useGetQueryParam();
   const code = query.get("code") || "";

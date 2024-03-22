@@ -1,5 +1,8 @@
 import { gql, useMutation } from "@apollo/client";
-import { editProfile, editProfileVariables } from "@generated/editProfile";
+import {
+  EditProfileMutation,
+  EditProfileMutationVariables,
+} from "@generated/graphql";
 import React from "react";
 import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
@@ -23,7 +26,7 @@ interface IFormProps {
 export const EditProfile = () => {
   const { data: userData, refetch: refreshUser } = useMe();
   // const client = useApolloClient();
-  const onCompleted = async (data: editProfile) => {
+  const onCompleted = async (data: EditProfileMutation) => {
     const {
       editProfile: { ok },
     } = data;
@@ -53,8 +56,8 @@ export const EditProfile = () => {
     }
   };
   const [editProfile, { loading }] = useMutation<
-    editProfile,
-    editProfileVariables
+    EditProfileMutation,
+    EditProfileMutationVariables
   >(EDIT_PROFILE_MUTATION, {
     onCompleted,
   });

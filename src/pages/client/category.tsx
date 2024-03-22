@@ -1,5 +1,5 @@
 import { gql, useQuery } from "@apollo/client";
-import { category, categoryVariables } from "@generated/category";
+import { CategoryQuery, CategoryQueryVariables } from "@generated/graphql";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useParams } from "react-router-dom";
@@ -38,14 +38,17 @@ export const Category = () => {
   const restaurantsQuery = useRestaurants({ page });
 
   const params = useParams<ICategoryParams>();
-  const categoryQuery = useQuery<category, categoryVariables>(CATEGORY_QUERY, {
-    variables: {
-      input: {
-        page: 1,
-        slug: params.slug,
+  const categoryQuery = useQuery<CategoryQuery, CategoryQueryVariables>(
+    CATEGORY_QUERY,
+    {
+      variables: {
+        input: {
+          page: 1,
+          slug: params.slug,
+        },
       },
-    },
-  });
+    }
+  );
 
   useEffect(() => {
     setPage(1);

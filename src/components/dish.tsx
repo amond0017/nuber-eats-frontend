@@ -1,4 +1,4 @@
-import { restaurant_restaurant_restaurant_menu_options } from "@generated/restaurant";
+import { DishOption } from "@generated/graphql";
 import React, { ReactNode } from "react";
 
 interface IDishProps {
@@ -9,7 +9,7 @@ interface IDishProps {
   isCustomer?: boolean;
   orderStarted?: boolean;
   isSelected?: boolean;
-  options?: restaurant_restaurant_restaurant_menu_options[] | null;
+  options?: DishOption[] | null;
   addItemToOrder?: (dishId: number) => void;
   removeFromOrder?: (dishId: number) => void;
   children?: ReactNode;

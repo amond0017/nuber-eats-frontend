@@ -1,12 +1,15 @@
 import { gql, useMutation } from "@apollo/client";
-import { createDish, createDishVariables } from "@generated/createDish";
 import { Helmet } from "react-helmet-async";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useHistory, useParams } from "react-router-dom";
 import { Button } from "src/components/button";
 import { FormError } from "src/components/form-error";
 import { MY_RESTAURANT_QUERY } from "./my-restaurant";
-import { DishOptionInputType } from "@generated/globalTypes";
+import {
+  CreateDishMutation,
+  CreateDishMutationVariables,
+  DishOptionInputType,
+} from "@generated/graphql";
 
 const CREATE_DISH_MUTATION = gql`
   mutation createDish($input: CreateDishInput!) {
@@ -37,8 +40,8 @@ export const AddDish = () => {
   };
 
   const [createDishMutation, { loading, data }] = useMutation<
-    createDish,
-    createDishVariables
+    CreateDishMutation,
+    CreateDishMutationVariables
   >(CREATE_DISH_MUTATION, {
     refetchQueries: [
       {

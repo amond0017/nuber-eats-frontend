@@ -1,8 +1,8 @@
 import { gql, useQuery } from "@apollo/client";
 import {
-  myRestaurantsPageQuery,
-  myRestaurantsPageQueryVariables,
-} from "@generated/myRestaurantsPageQuery";
+  MyRestaurantsPageQueryQuery,
+  MyRestaurantsPageQueryQueryVariables,
+} from "@generated/graphql";
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
@@ -28,8 +28,8 @@ export const MyRestaurants = () => {
   const [page, setPage] = useState(1);
 
   const { data } = useQuery<
-    myRestaurantsPageQuery,
-    myRestaurantsPageQueryVariables
+    MyRestaurantsPageQueryQuery,
+    MyRestaurantsPageQueryQueryVariables
   >(MY_RESTAURANTS_QUERY, {
     variables: {
       input: {

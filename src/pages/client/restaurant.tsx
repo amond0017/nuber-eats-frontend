@@ -1,14 +1,20 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { createOrder, createOrderVariables } from "@generated/createOrder";
-import { CreateOrderItemInput } from "@generated/globalTypes";
-import { restaurant, restaurantVariables } from "@generated/restaurant";
-import React, { useCallback, useState } from "react";
+import {
+  CreateOrderItemInput,
+  CreateOrderMutation,
+  CreateOrderMutationVariables,
+  RestaurantQuery,
+  RestaurantQueryVariables,
+} from "@generated/graphql";
+import { useCallback, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { Dish } from "src/components/dish";
 import { DishOption } from "src/components/dish-option";
 import { DISH_FRAGMENT, RESTAURANT_FRAGMENT } from "src/fragments";
 
 const RESTAURANT_QUERY = gql`
+  ${RESTAURANT_FRAGMENT}
+  ${DISH_FRAGMENT}
   query restaurant($input: RestaurantInput!) {
     restaurant(input: $input) {
       ok
@@ -21,8 +27,6 @@ const RESTAURANT_QUERY = gql`
       }
     }
   }
-  ${RESTAURANT_FRAGMENT}
-  ${DISH_FRAGMENT}
 `;
 
 const CREATE_ORDER_MUTATION = gql`
@@ -46,7 +50,7 @@ export const Restaurant = () => {
   const [orderStarted, setOrderStarted] = useState(false);
   const [orderItems, setOrderItems] = useState<CreateOrderItemInput[]>([]);
 
-  const { loading, data } = useQuery<restaurant, restaurantVariables>(
+  const { loading, data } = useQuery<RestaurantQuery, RestaurantQueryVariables>(
     RESTAURANT_QUERY,
     {
       variables: {
@@ -57,7 +61,7 @@ export const Restaurant = () => {
     }
   );
 
-  const onCompleted = (data: createOrder) => {
+  const onCompleted = (data: CreateOrderMutation) => {
     const {
       createOrder: { ok, orderId },
     } = data;
@@ -68,8 +72,8 @@ export const Restaurant = () => {
   };
 
   const [createOrderMutation, { loading: placingOrder }] = useMutation<
-    createOrder,
-    createOrderVariables
+    CreateOrderMutation,
+    CreateOrderMutationVariables
   >(CREATE_ORDER_MUTATION, {
     onCompleted,
   });

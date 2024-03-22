@@ -1,5 +1,4 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { myRestaurant, myRestaurantVariables } from "@generated/myRestaurant";
 import { Link, useParams } from "react-router-dom";
 import {
   VictoryAxis,
@@ -21,9 +20,11 @@ import { initializePaddle, Paddle } from "@paddle/paddle-js";
 import { useEffect, useState } from "react";
 import { useMe } from "src/hooks/useMe";
 import {
-  createPayment,
-  createPaymentVariables,
-} from "@generated/createPayment";
+  CreatePaymentMutation,
+  CreatePaymentMutationVariables,
+  MyRestaurantQuery,
+  MyRestaurantQueryVariables,
+} from "@generated/graphql";
 
 export const MY_RESTAURANT_QUERY = gql`
   query myRestaurant($input: MyRestaurantInput!) {
@@ -65,19 +66,19 @@ export const MyRestaurant = () => {
 
   const { data: userData } = useMe();
 
-  const onCompleted = (data: createPayment) => {
+  const onCompleted = (data: CreatePaymentMutation) => {
     if (data.createPayment.ok) {
       alert("Your restaurant is being promoted!");
     }
   };
   const [createPaymentMutation, { loading }] = useMutation<
-    createPayment,
-    createPaymentVariables
+    CreatePaymentMutation,
+    CreatePaymentMutationVariables
   >(CREATE_PAYMENT_MUTATION, {
     onCompleted,
   });
 
-  const { data } = useQuery<myRestaurant, myRestaurantVariables>(
+  const { data } = useQuery<MyRestaurantQuery, MyRestaurantQueryVariables>(
     MY_RESTAURANT_QUERY,
     {
       variables: {
