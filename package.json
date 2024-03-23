@@ -16,6 +16,7 @@
     "@types/react": "^18.2.59",
     "@types/react-dom": "^18.2.19",
     "graphql": "^16.8.1",
+    "graphql-ws": "^5.15.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-helmet-async": "^2.0.4",
@@ -29,7 +30,7 @@
   },
   "scripts": {
     "start": "npm run apollo:codegen & react-scripts start",
-    "apollo:codegen": "rimraf src/__generated__ && npm run generate",
+    "apollo:codegen": "npm run generate",
     "generate": "graphql-codegen",
     "build": "react-scripts build",
     "test": "react-scripts test",
