@@ -1,9 +1,10 @@
-import { gql, useQuery, useSubscription } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 import {
+  GetOrderQuery,
+  GetOrderQueryVariables,
   OrderUpdatesSubscription,
-  OrderUpdatesSubscriptionVariables,
 } from "@generated/graphql";
-import React from "react";
+import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useParams } from "react-router-dom";
 import { FULL_ORDER_FRAGMENT } from "src/fragments";
@@ -14,21 +15,11 @@ const GET_ORDER = gql`
       ok
       error
       order {
-        id
-        status
-        total
-        driver {
-          email
-        }
-        customer {
-          email
-        }
-        restaurant {
-          name
-        }
+        ...FullOrderParts
       }
     }
   }
+  ${FULL_ORDER_FRAGMENT}
 `;
 
 const ORDER_SUBSCRIPTION = gql`
@@ -46,7 +37,10 @@ interface IParams {
 
 export const Order = () => {
   const params = useParams<IParams>();
-  const { data } = useQuery(GET_ORDER, {
+  const { data, subscribeToMore } = useQuery<
+    GetOrderQuery,
+    GetOrderQueryVariables
+  >(GET_ORDER, {
     variables: {
       input: {
         id: +params.id,
@@ -54,17 +48,34 @@ export const Order = () => {
     },
   });
 
-  const { data: subscriptionData, loading } = useSubscription<
-    OrderUpdatesSubscription,
-    OrderUpdatesSubscriptionVariables
-  >(ORDER_SUBSCRIPTION, {
-    variables: {
-      input: {
-        id: +params.id,
-      },
-    },
-  });
-  console.log(subscriptionData);
+  useEffect(() => {
+    if (data?.getOrder.ok) {
+      subscribeToMore({
+        document: ORDER_SUBSCRIPTION,
+        variables: {
+          input: {
+            id: +params.id,
+          },
+        },
+        updateQuery: (
+          prev,
+          {
+            subscriptionData: { data },
+          }: { subscriptionData: { data: OrderUpdatesSubscription } }
+        ) => {
+          if (!data) return prev;
+          return {
+            getOrder: {
+              ...prev.getOrder,
+              order: {
+                ...data.orderUpdates,
+              },
+            },
+          };
+        },
+      });
+    }
+  }, [data]);
 
   return (
     <div className="mt-32 container flex justify-center">
