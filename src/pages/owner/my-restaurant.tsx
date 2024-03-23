@@ -1,5 +1,5 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
-import { Link, useParams } from "react-router-dom";
+import { gql, useMutation, useQuery, useSubscription } from "@apollo/client";
+import { Link, useHistory, useParams } from "react-router-dom";
 import {
   VictoryAxis,
   VictoryChart,
@@ -9,22 +9,24 @@ import {
   VictoryVoronoiContainer,
 } from "victory";
 
-import { Dish } from "src/components/dish";
-import {
-  DISH_FRAGMENT,
-  ORDERS_FRAGMENT,
-  RESTAURANT_FRAGMENT,
-} from "src/fragments";
-import { Helmet } from "react-helmet-async";
-import { initializePaddle, Paddle } from "@paddle/paddle-js";
-import { useEffect, useState } from "react";
-import { useMe } from "src/hooks/useMe";
 import {
   CreatePaymentMutation,
   CreatePaymentMutationVariables,
   MyRestaurantQuery,
   MyRestaurantQueryVariables,
+  PendingOrdersSubscription,
 } from "@generated/graphql";
+import { initializePaddle, Paddle } from "@paddle/paddle-js";
+import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { Dish } from "src/components/dish";
+import {
+  DISH_FRAGMENT,
+  FULL_ORDER_FRAGMENT,
+  ORDERS_FRAGMENT,
+  RESTAURANT_FRAGMENT,
+} from "src/fragments";
+import { useMe } from "src/hooks/useMe";
 
 export const MY_RESTAURANT_QUERY = gql`
   query myRestaurant($input: MyRestaurantInput!) {
@@ -56,12 +58,22 @@ const CREATE_PAYMENT_MUTATION = gql`
   }
 `;
 
+const PENDING_ORDERS_SUBSCRIPTION = gql`
+  subscription pendingOrders {
+    pendingOrders {
+      ...FullOrderParts
+    }
+  }
+  ${FULL_ORDER_FRAGMENT}
+`;
+
 interface IParams {
   id: string;
 }
 
 export const MyRestaurant = () => {
   const { id } = useParams<IParams>();
+  const history = useHistory();
   const [paddle, setPaddle] = useState<Paddle>();
 
   const { data: userData } = useMe();
@@ -88,6 +100,18 @@ export const MyRestaurant = () => {
       },
     }
   );
+
+  const { data: subscriptionData } = useSubscription<PendingOrdersSubscription>(
+    PENDING_ORDERS_SUBSCRIPTION
+  );
+
+  useEffect(() => {
+    // subscriptionData 를 바로 받을 수 없다. data 가 없을 수도 있고, 약간의 지연이 필요.
+    if (subscriptionData?.pendingOrders.id) {
+      const orderId = subscriptionData.pendingOrders.id;
+      history.push(`/orders/${orderId}`);
+    }
+  }, [subscriptionData]);
 
   // Download and initialize Paddle instance from CDN
   useEffect(() => {

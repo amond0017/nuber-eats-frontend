@@ -32,6 +32,7 @@ const documents = {
     "\n  mutation createRestaurant($input: CreateRestaurantInput!) {\n    createRestaurant(input: $input) {\n      error\n      ok\n      restaurantId\n    }\n  }\n": types.CreateRestaurantDocument,
     "\n  query myRestaurant($input: MyRestaurantInput!) {\n    myRestaurant(input: $input) {\n      ok\n      error\n      restaurant {\n        ...RestaurantParts\n        menu {\n          ...DishParts\n        }\n        orders {\n          ...OrderParts\n        }\n      }\n    }\n  }\n  \n  \n  \n": types.MyRestaurantDocument,
     "\n  mutation createPayment($input: CreatePaymentInput!) {\n    createPayment(input: $input) {\n      ok\n      error\n    }\n  }\n": types.CreatePaymentDocument,
+    "\n  subscription pendingOrders {\n    pendingOrders {\n      ...FullOrderParts\n    }\n  }\n  \n": types.PendingOrdersDocument,
     "\n  query myRestaurantsPageQuery($input: MyRestaurantsInput!) {\n    myRestaurants(input: $input) {\n      ok\n      error\n      totalPages\n      totalResults\n      results {\n        ...RestaurantParts\n      }\n    }\n  }\n  \n": types.MyRestaurantsPageQueryDocument,
     "\n  mutation verifyEmail($input: VerifyEmailInput!) {\n    verifyEmail(input: $input) {\n      ok\n      error\n    }\n  }\n": types.VerifyEmailDocument,
     "\n          fragment VerifiedUser on User {\n            ## fragment <fragmentName(아무거나)> on <Type(graphQL 의 타입과 같아야 됨!)>\n            verified ## 수정할 필드(fragment) 선언\n          }\n        ": types.VerifiedUserFragmentDoc,
@@ -128,6 +129,10 @@ export function gql(source: "\n  query myRestaurant($input: MyRestaurantInput!) 
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  mutation createPayment($input: CreatePaymentInput!) {\n    createPayment(input: $input) {\n      ok\n      error\n    }\n  }\n"): (typeof documents)["\n  mutation createPayment($input: CreatePaymentInput!) {\n    createPayment(input: $input) {\n      ok\n      error\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  subscription pendingOrders {\n    pendingOrders {\n      ...FullOrderParts\n    }\n  }\n  \n"): (typeof documents)["\n  subscription pendingOrders {\n    pendingOrders {\n      ...FullOrderParts\n    }\n  }\n  \n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
