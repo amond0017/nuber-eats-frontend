@@ -13,6 +13,8 @@ import { AddRestaurant } from "src/pages/owner/add-restaurant";
 import { MyRestaurant } from "src/pages/owner/my-restaurant";
 import { AddDish } from "src/pages/owner/add-dish";
 import { Order } from "src/pages/order";
+import { Dashboard } from "src/pages/driver/dashboard";
+import { UserRole } from "../__generated__/graphql";
 
 const clientRoutes = [
   {
@@ -67,6 +69,13 @@ const restaurantRoutes = [
   },
 ];
 
+const driverRoutes = [
+  {
+    path: "/",
+    component: <Dashboard />,
+  },
+];
+
 const LoggedInRouter = () => {
   const { data, loading, error } = useMe();
   if (!data || loading || error) {
@@ -80,15 +89,22 @@ const LoggedInRouter = () => {
     <Router>
       <Header />
       <Switch>
-        {data.me.role === "Client" &&
+        {data.me.role === UserRole.Client &&
           clientRoutes.map((route) => (
             <Route exact key={route.path} path={route.path}>
               {route.component}
             </Route>
           ))}
 
-        {data.me.role === "Owner" &&
+        {data.me.role === UserRole.Owner &&
           restaurantRoutes.map((route) => (
+            <Route exact key={route.path} path={route.path}>
+              {route.component}
+            </Route>
+          ))}
+
+        {data.me.role === UserRole.Delivery &&
+          driverRoutes.map((route) => (
             <Route exact key={route.path} path={route.path}>
               {route.component}
             </Route>
