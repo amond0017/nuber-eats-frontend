@@ -63,6 +63,7 @@
     "@parcel/watcher": "^2.4.1",
     "@testing-library/cypress": "^10.0.1",
     "@types/google-map-react": "^2.1.10",
+    "@types/google.maps": "^3.55.5",
     "@types/react-helmet": "^6.1.11",
     "@types/react-router-dom": "^5.3.3",
     "cypress": "^13.6.6",

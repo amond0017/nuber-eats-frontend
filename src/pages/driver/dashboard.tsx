@@ -14,19 +14,22 @@ const defaultProps = {
   zoom: 16,
 };
 
-interface IDriverIcon extends React.HTMLAttributes<HTMLElement> {
-  // lat?: number;
-  // lng?: number;
+interface IDriverProps extends React.HTMLAttributes<HTMLElement> {
+  lat: number;
+  lng: number;
+  $hover?: any;
 }
 
-const DriverIcon: React.FC<IDriverIcon> = ({ ...props }) => (
-  <div {...props}>🛵</div>
+const Driver: React.FC<IDriverProps> = ({ id }) => (
+  <div id={id} className="text-lg">
+    🛵
+  </div>
 );
 
 export const Dashboard = () => {
   const [driverCoords, setDriverCoords] = useState<ICoords>({ lat: 0, lng: 0 });
-  const [map, setMap] = useState<any>();
-  const [maps, setMaps] = useState<any>();
+  const [map, setMap] = useState<google.maps.Map>();
+  const [maps, setMaps] = useState<typeof google.maps>();
 
   useEffect(() => {
     navigator.geolocation.watchPosition(onSuccess, onError, {
@@ -36,23 +39,31 @@ export const Dashboard = () => {
 
   useEffect(() => {
     if (map && maps) {
-      map.panTo(new maps.LatLng(driverCoords.lat, driverCoords.lng));
+      map.panTo(new google.maps.LatLng(driverCoords.lat, driverCoords.lng));
+      const geocoder = new google.maps.Geocoder();
+      geocoder.geocode(
+        {
+          location: new google.maps.LatLng(driverCoords.lat, driverCoords.lng),
+        },
+        (result, status) => {
+          console.log(status, result);
+        }
+      );
     }
   }, [map, maps, driverCoords.lat, driverCoords.lng]);
 
   const onSuccess = ({
     coords: { latitude, longitude },
   }: GeolocationPosition) => {
-    // console.log("onSuccess callback ::: ", latitude, longitude);
     setDriverCoords({ lat: latitude, lng: longitude });
   };
 
   const onError = (error: GeolocationPositionError) => {
-    console.log("error!!!", error);
+    console.log(error);
   };
 
   const onApiLoaded = (map: any, maps: any) => {
-    map.panTo(new maps.LatLng(driverCoords.lat, driverCoords.lng));
+    map.panTo(new google.maps.LatLng(driverCoords.lat, driverCoords.lng));
     setMap(map);
     setMaps(maps);
   };
@@ -71,12 +82,10 @@ export const Dashboard = () => {
           yesIWantToUseGoogleMapApiInternals
           onGoogleApiLoaded={({ map, maps }) => onApiLoaded(map, maps)}
         >
-          <DriverIcon
+          <Driver
             id="nuber-driver"
-            className="text-lg"
-            // @ts-ignore // 35.2260042 128.8669308
-            lat={35.22}
-            lng={128.87}
+            lat={driverCoords.lat}
+            lng={driverCoords.lng}
           />
         </GoogleMapReact>
       </div>
