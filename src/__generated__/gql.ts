@@ -26,6 +26,7 @@ const documents = {
     "\n  query searchRestaurant($input: SearchRestaurantInput!) {\n    searchRestaurant(input: $input) {\n      ok\n      error\n      totalPages\n      totalResults\n      restaurants {\n        ...RestaurantParts\n      }\n    }\n  }\n  \n": types.SearchRestaurantDocument,
     "\n  mutation createAccountMutation($createAccountInput: CreateAccountInput!) {\n    createAccount(input: $createAccountInput) {\n      ok\n      error\n    }\n  }\n": types.CreateAccountMutationDocument,
     "\n  subscription cookedOrders {\n    cookedOrders {\n      ...FullOrderParts\n    }\n  }\n  \n": types.CookedOrdersDocument,
+    "\n  mutation takeOrder($input: TakeOrderInput!) {\n    takeOrder(input: $input) {\n      ok\n      error\n    }\n  }\n": types.TakeOrderDocument,
     "\n  mutation loginMutation($loginInput: LoginInput!) {\n    login(input: $loginInput) {\n      ok\n      token\n      error\n    }\n  }\n": types.LoginMutationDocument,
     "\n  query getOrder($input: GetOrderInput!) {\n    getOrder(input: $input) {\n      ok\n      error\n      order {\n        ...FullOrderParts\n      }\n    }\n  }\n  \n": types.GetOrderDocument,
     "\n  subscription orderUpdates($input: OrderUpdatesInput!) {\n    orderUpdates(input: $input) {\n      ...FullOrderParts\n    }\n  }\n  \n": types.OrderUpdatesDocument,
@@ -107,6 +108,10 @@ export function gql(source: "\n  mutation createAccountMutation($createAccountIn
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  subscription cookedOrders {\n    cookedOrders {\n      ...FullOrderParts\n    }\n  }\n  \n"): (typeof documents)["\n  subscription cookedOrders {\n    cookedOrders {\n      ...FullOrderParts\n    }\n  }\n  \n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation takeOrder($input: TakeOrderInput!) {\n    takeOrder(input: $input) {\n      ok\n      error\n    }\n  }\n"): (typeof documents)["\n  mutation takeOrder($input: TakeOrderInput!) {\n    takeOrder(input: $input) {\n      ok\n      error\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

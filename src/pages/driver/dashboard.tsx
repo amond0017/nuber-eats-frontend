@@ -1,8 +1,12 @@
-import { gql, useSubscription } from "@apollo/client";
-import { CookedOrdersSubscription } from "@generated/graphql";
+import { gql, useMutation, useSubscription } from "@apollo/client";
+import {
+  CookedOrdersSubscription,
+  TakeOrderMutation,
+  TakeOrderMutationVariables,
+} from "@generated/graphql";
 import GoogleMapReact from "google-map-react";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { FULL_ORDER_FRAGMENT } from "src/fragments";
 
 const COOKED_ORDERS_SUBSCRIPTION = gql`
@@ -12,6 +16,15 @@ const COOKED_ORDERS_SUBSCRIPTION = gql`
     }
   }
   ${FULL_ORDER_FRAGMENT}
+`;
+
+const TAKE_ORDER_MUTATION = gql`
+  mutation takeOrder($input: TakeOrderInput!) {
+    takeOrder(input: $input) {
+      ok
+      error
+    }
+  }
 `;
 
 interface ICoords {
@@ -40,6 +53,8 @@ const Driver: React.FC<IDriverProps> = ({ id }) => (
 );
 
 export const Dashboard = () => {
+  const history = useHistory();
+
   const [driverCoords, setDriverCoords] = useState<ICoords>({ lat: 0, lng: 0 });
   const [map, setMap] = useState<google.maps.Map>();
   const [maps, setMaps] = useState<typeof google.maps>();
@@ -47,6 +62,11 @@ export const Dashboard = () => {
   const { data: cookedOrdersData } = useSubscription<CookedOrdersSubscription>(
     COOKED_ORDERS_SUBSCRIPTION
   );
+
+  const [takeOrderMutation] = useMutation<
+    TakeOrderMutation,
+    TakeOrderMutationVariables
+  >(TAKE_ORDER_MUTATION);
 
   useEffect(() => {
     navigator.geolocation.watchPosition(onSuccess, onError, {
@@ -137,6 +157,21 @@ export const Dashboard = () => {
     }
   };
 
+  const onAcceptChallengeClick = (id: number) => {
+    takeOrderMutation({
+      variables: {
+        input: {
+          id,
+        },
+      },
+      onCompleted: (data: TakeOrderMutation) => {
+        if (data.takeOrder.ok) {
+          history.push(`/orders/${id}`);
+        }
+      },
+    });
+  };
+
   return (
     <div>
       <div
@@ -161,12 +196,14 @@ export const Dashboard = () => {
             <h1 className="text-center my-3 text-2xl font-medium">
               Pick it up soon @ {cookedOrdersData.cookedOrders.restaurant.name}
             </h1>
-            <Link
-              to={`/orders/${cookedOrdersData.cookedOrders.id}`}
-              className="btn w-full block text-center mt-5"
+            <button
+              onClick={() =>
+                onAcceptChallengeClick(cookedOrdersData.cookedOrders.id)
+              }
+              className="btn w-full mt-5"
             >
               Accept Challenge &rarr;
-            </Link>
+            </button>
           </>
         ) : (
           <h1 className="text-center text-3xl font-medium">No orders yet...</h1>
