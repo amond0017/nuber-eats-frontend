@@ -37,8 +37,6 @@ export const Category = () => {
 
   const restaurantsQuery = useRestaurants({ page });
 
-  console.log("resQeury === ", restaurantsQuery);
-
   const { slug = "" } = useParams<ICategoryParams["slug"]>();
   const categoryQuery = useQuery<CategoryQuery, CategoryQueryVariables>(
     CATEGORY_QUERY,
