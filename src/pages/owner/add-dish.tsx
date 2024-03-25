@@ -1,7 +1,7 @@
 import { gql, useMutation } from "@apollo/client";
 import { Helmet } from "react-helmet-async";
 import { useFieldArray, useForm } from "react-hook-form";
-import { useHistory, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "src/components/button";
 import { FormError } from "src/components/form-error";
 import { MY_RESTAURANT_QUERY } from "./my-restaurant";
@@ -32,11 +32,12 @@ interface IForm {
 }
 
 export const AddDish = () => {
-  const { id: restaurantId } = useParams<IParams>();
-  const history = useHistory();
+  const { id: restaurantId = 0 } = useParams<IParams["id"]>();
+  const navigate = useNavigate();
 
   const onCompleted = () => {
-    history.goBack();
+    // history.goBack();
+    navigate(-1);
   };
 
   const [createDishMutation, { loading, data }] = useMutation<

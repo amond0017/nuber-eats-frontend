@@ -37,14 +37,16 @@ export const Category = () => {
 
   const restaurantsQuery = useRestaurants({ page });
 
-  const params = useParams<ICategoryParams>();
+  console.log("resQeury === ", restaurantsQuery);
+
+  const { slug = "" } = useParams<ICategoryParams["slug"]>();
   const categoryQuery = useQuery<CategoryQuery, CategoryQueryVariables>(
     CATEGORY_QUERY,
     {
       variables: {
         input: {
-          page: 1,
-          slug: params.slug,
+          page,
+          slug,
         },
       },
     }
@@ -52,7 +54,7 @@ export const Category = () => {
 
   useEffect(() => {
     setPage(1);
-  }, [params.slug]);
+  }, [slug]);
 
   const onNextPageClick = () => setPage((current) => current + 1);
   const onPrevPageClick = () => setPage((current) => current - 1);
@@ -60,7 +62,7 @@ export const Category = () => {
   return (
     <div>
       <Helmet>
-        <title>{toPascalCase(params.slug)} | Nuber Eats</title>
+        <title>{toPascalCase(slug)} | Nuber Eats</title>
       </Helmet>
 
       <SearchForm />

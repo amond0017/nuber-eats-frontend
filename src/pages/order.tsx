@@ -49,7 +49,7 @@ interface IParams {
 }
 
 export const Order = () => {
-  const params = useParams<IParams>();
+  const params = useParams<IParams["id"]>();
   const { data: userData } = useMe();
 
   const [editOrderMutation] = useMutation<
@@ -63,7 +63,7 @@ export const Order = () => {
   >(GET_ORDER, {
     variables: {
       input: {
-        id: +params.id,
+        id: +(params.id || 0),
       },
     },
   });
@@ -74,7 +74,7 @@ export const Order = () => {
         document: ORDER_SUBSCRIPTION,
         variables: {
           input: {
-            id: +params.id,
+            id: +(params.id || 0),
           },
         },
         updateQuery: (
@@ -101,7 +101,7 @@ export const Order = () => {
     editOrderMutation({
       variables: {
         input: {
-          id: +params.id,
+          id: +(params.id || 0),
           status: newStatus,
         },
       },

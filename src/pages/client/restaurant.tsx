@@ -7,7 +7,7 @@ import {
   RestaurantQueryVariables,
 } from "@generated/graphql";
 import { useCallback, useState } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Dish } from "src/components/dish";
 import { DishOption } from "src/components/dish-option";
 import { DISH_FRAGMENT, RESTAURANT_FRAGMENT } from "src/fragments";
@@ -44,8 +44,8 @@ interface IRestaurantParams {
 }
 
 export const Restaurant = () => {
-  const params = useParams<IRestaurantParams>();
-  const history = useHistory();
+  const { id = 0 } = useParams<IRestaurantParams["id"]>();
+  const navigate = useNavigate();
 
   const [orderStarted, setOrderStarted] = useState(false);
   const [orderItems, setOrderItems] = useState<CreateOrderItemInput[]>([]);
@@ -55,7 +55,7 @@ export const Restaurant = () => {
     {
       variables: {
         input: {
-          restaurantId: +params.id,
+          restaurantId: +id,
         },
       },
     }
@@ -67,7 +67,7 @@ export const Restaurant = () => {
     } = data;
     if (ok) {
       alert("order created");
-      history.push(`/orders/${orderId}`);
+      navigate(`/orders/${orderId}`);
     }
   };
 
@@ -177,7 +177,7 @@ export const Restaurant = () => {
       createOrderMutation({
         variables: {
           input: {
-            restaurantId: +params.id,
+            restaurantId: +id,
             items: orderItems,
           },
         },

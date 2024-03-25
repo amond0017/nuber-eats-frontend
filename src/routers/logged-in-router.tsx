@@ -1,4 +1,4 @@
-import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { Header } from "../components/header";
 import { useMe } from "../hooks/useMe";
 import { NotFound } from "../pages/404";
@@ -88,37 +88,39 @@ const LoggedInRouter = () => {
   return (
     <Router>
       <Header />
-      <Switch>
+      <Routes>
         {data.me.role === UserRole.Client &&
           clientRoutes.map((route) => (
-            <Route exact key={route.path} path={route.path}>
-              {route.component}
-            </Route>
+            <Route
+              key={route.path}
+              path={route.path}
+              element={route.component}
+            />
           ))}
 
         {data.me.role === UserRole.Owner &&
           restaurantRoutes.map((route) => (
-            <Route exact key={route.path} path={route.path}>
-              {route.component}
-            </Route>
+            <Route
+              key={route.path}
+              path={route.path}
+              element={route.component}
+            />
           ))}
 
         {data.me.role === UserRole.Delivery &&
           driverRoutes.map((route) => (
-            <Route exact key={route.path} path={route.path}>
-              {route.component}
-            </Route>
+            <Route
+              key={route.path}
+              path={route.path}
+              element={route.component}
+            />
           ))}
 
         {commonRoutes.map((route) => (
-          <Route key={route.path} path={route.path}>
-            {route.component}
-          </Route>
+          <Route key={route.path} path={route.path} element={route.component} />
         ))}
-        <Route>
-          <NotFound />
-        </Route>
-      </Switch>
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </Router>
   );
 };

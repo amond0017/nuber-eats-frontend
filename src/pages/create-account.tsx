@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { FormError } from "../components/form-error";
 import nuberLogo from "../images/logo.svg";
 import { Button } from "../components/button";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import {
   CreateAccountMutationMutation,
@@ -39,7 +39,7 @@ export const CreateAccount = () => {
     },
   });
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const onCompleted = (data: CreateAccountMutationMutation) => {
     const {
@@ -48,7 +48,7 @@ export const CreateAccount = () => {
 
     if (ok) {
       alert("Account Created! Log in now!");
-      history.push("/");
+      navigate("/");
     }
   };
 

@@ -5,7 +5,7 @@ import {
 } from "@generated/graphql";
 import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useGetQueryParam } from "src/hooks/useGetQueryParam";
 import { useMe } from "src/hooks/useMe";
 
@@ -21,7 +21,7 @@ const VERIFY_EMAIL_MUTATION = gql`
 export const ConfirmEmail = () => {
   const { data: userData } = useMe();
   const client = useApolloClient(); // apollo client 불러오기
-  const history = useHistory();
+  const navigate = useNavigate();
   const onCompleted = (data: VerifyEmailMutation) => {
     const {
       verifyEmail: { ok },
@@ -40,7 +40,7 @@ export const ConfirmEmail = () => {
           verified: true, // 수정할 데이터
         },
       });
-      history.push("/");
+      navigate("/");
     }
   };
   const [verifyEmail] = useMutation<

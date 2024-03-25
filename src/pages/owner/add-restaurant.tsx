@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { Button } from "src/components/button";
 import { FormError } from "src/components/form-error";
 import { MY_RESTAURANTS_QUERY } from "./my-restaurants";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   CreateRestaurantMutation,
   CreateRestaurantMutationVariables,
@@ -30,7 +30,7 @@ interface IFormProps {
 
 export const AddRestaurant = () => {
   const client = useApolloClient();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [imageUrl, setImageUrl] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -79,7 +79,7 @@ export const AddRestaurant = () => {
         },
       });
 
-      history.push("/");
+      navigate("/");
     } else if (error) setErrorMessage(error);
   };
 

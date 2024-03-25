@@ -1,5 +1,5 @@
 import { gql, useMutation, useQuery, useSubscription } from "@apollo/client";
-import { Link, useHistory, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   VictoryAxis,
   VictoryChart,
@@ -72,8 +72,8 @@ interface IParams {
 }
 
 export const MyRestaurant = () => {
-  const { id } = useParams<IParams>();
-  const history = useHistory();
+  const { id = 0 } = useParams<IParams["id"]>();
+  const navigate = useNavigate();
   const [paddle, setPaddle] = useState<Paddle>();
 
   const { data: userData } = useMe();
@@ -109,7 +109,7 @@ export const MyRestaurant = () => {
     // subscriptionData 를 바로 받을 수 없다. data 가 없을 수도 있고, 약간의 지연이 필요.
     if (subscriptionData?.pendingOrders.id) {
       const orderId = subscriptionData.pendingOrders.id;
-      history.push(`/orders/${orderId}`);
+      navigate(`/orders/${orderId}`);
     }
   }, [subscriptionData]);
 

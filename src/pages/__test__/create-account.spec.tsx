@@ -12,7 +12,7 @@ jest.mock("react-router-dom", () => {
   const realModule = jest.requireActual("react-router-dom");
   return {
     ...realModule,
-    useHistory: () => {
+    useNavigate: () => {
       return {
         push: mockPush,
       };

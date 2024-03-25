@@ -5,7 +5,7 @@ import {
 } from "@generated/graphql";
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { Link, useHistory, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Restaurant } from "src/components/restaurant";
 import { SearchForm } from "src/components/search-form";
 import { RESTAURANT_FRAGMENT } from "src/fragments";
@@ -28,7 +28,7 @@ const SEARCH_RESTAURANT = gql`
 
 export const Search = () => {
   const location = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [page, setPage] = useState(1);
 
@@ -42,7 +42,7 @@ export const Search = () => {
 
   useEffect(() => {
     if (!query) {
-      return history.replace("/");
+      return navigate("/");
     }
     setPage(1);
 
@@ -54,7 +54,7 @@ export const Search = () => {
         },
       },
     });
-  }, [history, query]);
+  }, [navigate, query]);
 
   const onNextPageClick = () => setPage((current) => current + 1);
   const onPrevPageClick = () => setPage((current) => current - 1);

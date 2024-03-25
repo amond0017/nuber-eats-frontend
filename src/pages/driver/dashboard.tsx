@@ -6,7 +6,7 @@ import {
 } from "@generated/graphql";
 import GoogleMapReact from "google-map-react";
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FULL_ORDER_FRAGMENT } from "src/fragments";
 
 const COOKED_ORDERS_SUBSCRIPTION = gql`
@@ -53,7 +53,7 @@ const Driver: React.FC<IDriverProps> = ({ id }) => (
 );
 
 export const Dashboard = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [driverCoords, setDriverCoords] = useState<ICoords>({ lat: 0, lng: 0 });
   const [map, setMap] = useState<google.maps.Map>();
@@ -166,7 +166,7 @@ export const Dashboard = () => {
       },
       onCompleted: (data: TakeOrderMutation) => {
         if (data.takeOrder.ok) {
-          history.push(`/orders/${id}`);
+          navigate(`/orders/${id}`);
         }
       },
     });
