@@ -39,6 +39,7 @@ export type Category = {
 
 export type CategoryInput = {
   page?: Scalars['Int']['input'];
+  pageSize?: Scalars['Int']['input'];
   slug: Scalars['String']['input'];
 };
 
@@ -369,6 +370,7 @@ export type MyRestaurantOutput = {
 
 export type MyRestaurantsInput = {
   page?: Scalars['Int']['input'];
+  pageSize?: Scalars['Int']['input'];
 };
 
 export type MyRestaurantsOutput = {
@@ -526,6 +528,7 @@ export type RestaurantOutput = {
 
 export type RestaurantsInput = {
   page?: Scalars['Int']['input'];
+  pageSize?: Scalars['Int']['input'];
 };
 
 export type RestaurantsOutput = {
@@ -539,6 +542,7 @@ export type RestaurantsOutput = {
 
 export type SearchRestaurantInput = {
   page?: Scalars['Int']['input'];
+  pageSize?: Scalars['Int']['input'];
   query: Scalars['String']['input'];
 };
 
