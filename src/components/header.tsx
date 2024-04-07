@@ -6,17 +6,19 @@ import {
   faArrowRightFromBracket,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { LOCALSTORAGE_TOKEN } from "src/constants";
 import { authTokenVar, isLoggedInVar } from "src/apollo";
 
 export const Header = () => {
+  const navigate = useNavigate();
   const { data } = useMe();
 
   const onClickLogout = () => {
     localStorage.removeItem(LOCALSTORAGE_TOKEN);
     authTokenVar(null);
     isLoggedInVar(false);
+    navigate("/");
   };
 
   return (
