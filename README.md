@@ -2,6 +2,8 @@
 
 [풀스택 우버 이츠 클론코딩](https://nomadcoders.co/nuber-eats)
 
+구경해보시궜어요 -> 🚀 [Click](https://nuber-eats-frontend-kys.netlify.app/)
+
 - ReactJS (using [CRA](https://create-react-app.dev/)) with Typescript
 - [React Router(v6)](https://reactrouter.com/)
   - Routing
