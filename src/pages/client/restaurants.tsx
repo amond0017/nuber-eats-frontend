@@ -1,3 +1,5 @@
+import { faUtensils } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
@@ -27,9 +29,13 @@ export const Restaurants = () => {
               <Link to={`/category/${category.slug}`} key={category.slug}>
                 <div className="flex flex-col group items-center cursor-pointer">
                   <div
-                    className="w-16 h-16 bg-cover group-hover:bg-gray-100 rounded-full"
-                    style={{ backgroundImage: `url(${category.coverImg})` }}
-                  ></div>
+                    className="w-16 h-16 bg-contain bg-no-repeat bg-center group-hover:bg-gray-100 rounded-full flex justify-center items-center"
+                    style={{ backgroundImage: `url(${category?.coverImg})` }}
+                  >
+                    {!category?.coverImg && (
+                      <FontAwesomeIcon className="w-8 h-8" icon={faUtensils} />
+                    )}
+                  </div>
                   <span className="mt-1 text-sm font-medium">
                     {category.name}
                   </span>
