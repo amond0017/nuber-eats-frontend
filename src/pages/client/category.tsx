@@ -72,7 +72,7 @@ export const Category = () => {
             <Link to="/">
               <div className="flex flex-col group items-center cursor-pointer">
                 <CategoryImage />
-                <span className="mt-1 text-sm font-medium">전체</span>
+                <span className="mt-1 text-sm font-medium">All</span>
               </div>
             </Link>
             {restaurantsQuery.data?.allCategories.categories?.map(
