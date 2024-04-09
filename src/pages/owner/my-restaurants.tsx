@@ -57,17 +57,24 @@ export const MyRestaurants = () => {
             </Link>
           </>
         ) : (
-          <div className="grid mt-16 md:grid-cols-3 gap-x-5 gap-y-10">
-            {data?.myRestaurants.results?.map((restaurant) => (
-              <Restaurant
-                key={restaurant.id + ""}
-                id={restaurant.id + ""}
-                coverImg={restaurant.coverImg}
-                name={restaurant.name}
-                categoryName={restaurant.category?.name}
-              />
-            ))}
-          </div>
+          <>
+            <div className="flex justify-end">
+              <Link className="btn px-4" to="/add-restaurant">
+                Create
+              </Link>
+            </div>
+            <div className="grid mt-16 md:grid-cols-3 gap-x-5 gap-y-10">
+              {data?.myRestaurants.results?.map((restaurant) => (
+                <Restaurant
+                  key={restaurant.id + ""}
+                  id={restaurant.id + ""}
+                  coverImg={restaurant.coverImg}
+                  name={restaurant.name}
+                  categoryName={restaurant.category?.name}
+                />
+              ))}
+            </div>
+          </>
         )}
       </div>
     </div>
