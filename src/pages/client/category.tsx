@@ -3,6 +3,7 @@ import { CategoryQuery, CategoryQueryVariables } from "@generated/graphql";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useParams } from "react-router-dom";
+import { CategoryImage } from "src/components/category-image";
 import { Restaurant } from "src/components/restaurant";
 import { SearchForm } from "src/components/search-form";
 import { CATEGORY_FRAGMENT, RESTAURANT_FRAGMENT } from "src/fragments";
@@ -68,14 +69,17 @@ export const Category = () => {
       {!(categoryQuery.loading || restaurantsQuery.loading) && (
         <div className="max-w-screen-2xl pb-20 mx-auto mt-8">
           <div className="flex justify-around max-w-sm mx-auto">
+            <Link to="/">
+              <div className="flex flex-col group items-center cursor-pointer">
+                <CategoryImage />
+                <span className="mt-1 text-sm font-medium">전체</span>
+              </div>
+            </Link>
             {restaurantsQuery.data?.allCategories.categories?.map(
               (category) => (
                 <Link to={`/category/${category.slug}`} key={category.slug}>
                   <div className="flex flex-col group items-center cursor-pointer">
-                    <div
-                      className="w-16 h-16 bg-cover group-hover:bg-gray-100 rounded-full"
-                      style={{ backgroundImage: `url(${category.coverImg})` }}
-                    ></div>
+                    <CategoryImage coverImg={category.coverImg} />
                     <span className="mt-1 text-sm font-medium">
                       {category.name}
                     </span>
