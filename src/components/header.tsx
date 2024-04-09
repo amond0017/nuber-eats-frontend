@@ -1,23 +1,24 @@
-import React from "react";
-import nuberLogo from "../images/logo.svg";
-import { useMe } from "../hooks/useMe";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRightFromBracket,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useNavigate } from "react-router-dom";
-import { LOCALSTORAGE_TOKEN } from "src/constants";
 import { authTokenVar, isLoggedInVar } from "src/apollo";
+import { LOCALSTORAGE_TOKEN } from "src/constants";
+import { useMe } from "../hooks/useMe";
+import nuberLogo from "../images/logo.svg";
 
 export const Header = () => {
   const navigate = useNavigate();
-  const { data } = useMe();
+  const { data, client } = useMe();
 
   const onClickLogout = () => {
     localStorage.removeItem(LOCALSTORAGE_TOKEN);
     authTokenVar(null);
     isLoggedInVar(false);
+    client.clearStore();
+
     navigate("/");
   };
 
