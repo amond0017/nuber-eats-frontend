@@ -49,35 +49,37 @@ export const AddRestaurant = () => {
         query: MY_RESTAURANTS_QUERY,
         variables: { input: { page: 1 } }, // variables 가 있는 쿼리에 variables 명시하지 않으면 null 을 리턴한다.
       });
-      client.writeQuery({
-        query: MY_RESTAURANTS_QUERY,
-        data: {
-          ...queryResult,
-          myRestaurants: {
-            ...queryResult.myRestaurants,
-            results: [
-              {
-                id: restaurantId,
-                name,
-                coverImg: imageUrl,
-                category: {
-                  name: categoryName,
-                  __typename: "Category",
+
+      !!queryResult &&
+        client.writeQuery({
+          query: MY_RESTAURANTS_QUERY,
+          data: {
+            ...queryResult,
+            myRestaurants: {
+              ...queryResult.myRestaurants,
+              results: [
+                {
+                  id: restaurantId,
+                  name,
+                  coverImg: imageUrl,
+                  category: {
+                    name: categoryName,
+                    __typename: "Category",
+                  },
+                  address,
+                  isPromoted: false,
+                  __typename: "Restaurant",
                 },
-                address,
-                isPromoted: false,
-                __typename: "Restaurant",
-              },
-              ...queryResult.myRestaurants.results,
-            ],
+                ...queryResult.myRestaurants.results,
+              ],
+            },
           },
-        },
-        variables: {
-          input: {
-            page: 1,
+          variables: {
+            input: {
+              page: 1,
+            },
           },
-        },
-      });
+        });
 
       navigate("/");
     } else if (error) setErrorMessage(error);
