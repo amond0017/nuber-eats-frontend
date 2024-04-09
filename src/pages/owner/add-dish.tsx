@@ -1,4 +1,4 @@
-import { gql, useMutation } from "@apollo/client";
+import { ApolloError, gql, useMutation } from "@apollo/client";
 import { Helmet } from "react-helmet-async";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
@@ -10,6 +10,7 @@ import {
   CreateDishMutationVariables,
   DishOptionInputType,
 } from "@generated/graphql";
+import { useState } from "react";
 
 const CREATE_DISH_MUTATION = gql`
   mutation createDish($input: CreateDishInput!) {
@@ -35,9 +36,33 @@ export const AddDish = () => {
   const { id: restaurantId = 0 } = useParams<IParams["id"]>();
   const navigate = useNavigate();
 
-  const onCompleted = () => {
-    // history.goBack();
-    navigate(-1);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const onCompleted = (data: CreateDishMutation) => {
+    const {
+      createDish: { ok, error },
+    } = data;
+
+    if (ok) {
+      navigate(-1);
+    } else if (error) {
+      setErrorMessage(error);
+    }
+  };
+
+  const onError = (e: ApolloError) => {
+    setErrorMessage(() => {
+      if (!!e.graphQLErrors?.length) {
+        const {
+          extensions: { originalError },
+        } = e.graphQLErrors[0] as Record<string, any>;
+
+        return (
+          (!!originalError?.message.length && originalError?.message[0]) ||
+          "Something is wrong."
+        );
+      }
+    });
   };
 
   const [createDishMutation, { loading, data }] = useMutation<
@@ -53,6 +78,7 @@ export const AddDish = () => {
       },
     ],
     onCompleted,
+    onError,
   });
 
   const {
@@ -82,15 +108,6 @@ export const AddDish = () => {
         ...(!!option.extra && { extra: +option.extra }),
       }));
     }
-
-    // const input = {
-    //   name,
-    //   price: +price,
-    //   description,
-    //   restaurantId: +restaurantId,
-    //   ...(!!options?.length && { options: convertedOptions }),
-    // };
-    // console.log("input", input);
 
     createDishMutation({
       variables: {
@@ -187,9 +204,7 @@ export const AddDish = () => {
             actionText="Create Dish"
           />
 
-          {data?.createDish?.error && (
-            <FormError errorMessage={data.createDish.error} />
-          )}
+          {!!errorMessage && <FormError errorMessage={errorMessage} />}
         </form>
       </div>
     </div>

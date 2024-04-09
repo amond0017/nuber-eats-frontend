@@ -86,7 +86,6 @@ export const AddRestaurant = () => {
   };
 
   const onError = (e: ApolloError) => {
-    console.log("add-restaurant error ::: ", e);
     setUploading(false);
     setErrorMessage(() => {
       if (!!e.graphQLErrors?.length) {
