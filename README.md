@@ -6,7 +6,18 @@
 
 사용법은 아래에서 확인 ⬇️
 
+<table>
+<tr >
+<th style="text-align:center;border:none;">[고객]</th>
+<th style="text-align:center;border:none;">[점주]</th>
+<th style="text-align:center;border:none;">[배달원]</th>
+</tr>
+<tr>
+  <td colspan="3">
 <img src="https://lh3.googleusercontent.com/drive-viewer/AKGpihaAEnSs5uzpCA0HEkz57f3h-Hg_obmozn4gLIBYS2YV3I_s4GaiwDj5BirnpjPfbFPDlPVVXg-wn4H4uJpMqzGl0GJzlLHn42Y=w1920-h911-v0" />
+  </td>
+</tr>
+</table>
 
 - ReactJS (using [CRA](https://create-react-app.dev/)) with Typescript
 - [React Router(v6)](https://reactrouter.com/)
